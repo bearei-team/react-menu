@@ -18,7 +18,7 @@ export interface SelectOptions {
 }
 
 /**
- * Menu item.
+ * Menu item options.
  */
 export interface MenuItemOptions {
   /**
