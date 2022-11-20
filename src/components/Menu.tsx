@@ -20,7 +20,7 @@ export interface SelectOptions {
 /**
  * Menu item.
  */
-export interface MenuItem {
+export interface MenuItemOptions {
   /**
    * Menu item label.
    */
@@ -41,7 +41,7 @@ export interface MenuItem {
  * Menu props.
  */
 export interface MenuProps extends Pick<SelectOptions, 'selectedKeys'> {
-  menus: MenuItem[];
+  menus: MenuItemOptions[];
 
   /**
    * Allow multiple menus.
