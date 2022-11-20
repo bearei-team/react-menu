@@ -20,7 +20,7 @@ export interface SelectOptions {
 /**
  * Menu item.
  */
-export interface Item {
+export interface MenuItem {
   /**
    * Menu item label.
    */
@@ -41,7 +41,7 @@ export interface Item {
  * Menu props.
  */
 export interface MenuProps extends Pick<SelectOptions, 'selectedKeys'> {
-  items: Item[];
+  menus: MenuItem[];
 
   /**
    * Allow multiple menus.
@@ -61,7 +61,7 @@ export interface MenuProps extends Pick<SelectOptions, 'selectedKeys'> {
 }
 
 export const Menu: React.FC<MenuProps> = ({
-  items,
+  menus,
   multiple = false,
   children,
   selectedKeys,
@@ -70,7 +70,7 @@ export const Menu: React.FC<MenuProps> = ({
 }) => {
   const [keys, setKeys] = useState<string[]>([]);
   const handleSelected = (key: string) => {
-    const disabled = items.find(menu => key === menu.key)?.disabled;
+    const disabled = menus.find(menu => key === menu.key)?.disabled;
 
     if (disabled) {
       return;
@@ -99,7 +99,7 @@ export const Menu: React.FC<MenuProps> = ({
     nextKeys && setKeys(nextKeys);
 
     onSelect?.({selectedKeys: nextKeys});
-  }, [items, defaultSelectedKeys, selectedKeys, onSelect]);
+  }, [menus, defaultSelectedKeys, selectedKeys, onSelect]);
 
   return (
     <>
