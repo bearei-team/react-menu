@@ -14,13 +14,15 @@ const getEntries = () => {
   entryFiles.forEach(filepath => {
     let fileDir = /.\/src\/(.*?)\.(ts|tsx)$/i.exec(filepath);
 
-    fileDir && Object.assign(map, {[fileDir[1]]: path.resolve(__dirname, filepath)});
+    fileDir &&
+      Object.assign(map, {[fileDir[1]]: path.resolve(__dirname, filepath)});
   });
 
   return map;
 };
 
-const webpackConfig = process.env.LIBRARY === 'module' ? webpackESMConfig : webpackCJSConfig;
+const webpackConfig =
+  process.env.LIBRARY === 'module' ? webpackESMConfig : webpackCJSConfig;
 const mode = process.env.MODE as webpack.Configuration['mode'];
 const config: webpack.Configuration = {
   mode,

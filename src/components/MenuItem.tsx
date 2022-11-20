@@ -1,24 +1,20 @@
-import {getPlatformEvent, Fun} from '@bearei/react-util';
+import {getPlatformEvent, EventFun} from '@bearei/react-util';
 import * as React from 'react';
 
 /**
- * 菜单项目
+ * Menu item props.
  */
 export interface MenuItemProps {
   /**
-   * 菜单项目 Key
+   * Index of menu items.
    */
   index: string;
-
-  /**
-   * 子级
-   */
   children?: JSX.Element;
 
   /**
-   * 监听事件
+   * Menu items listen for events.
    */
-  onEvent?: Fun;
+  onEvent?: EventFun;
 }
 
 export const MenuItem: React.FC<MenuItemProps> = ({onEvent, children}) => (
