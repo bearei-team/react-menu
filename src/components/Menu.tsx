@@ -3,71 +3,59 @@ import {HandleEvent, handleEvent} from '@bearei/react-util';
 import {MenuItemProps} from './MenuItem';
 
 /**
- * 监听选择选项
+ * Listen for menu selection to become an options.
  */
 export interface SelectOptions {
   /**
-   * 当前选择 Key
+   * The currently selected menu Key.
    */
   key?: string;
 
   /**
-   * 菜单选择 Key 集合
+   * The currently selected completed menu key.
    */
   selectedKeys?: string[];
 }
 
 /**
- * 菜单项目
+ * Menu item.
  */
 export interface Item {
   /**
-   * 标签
+   * Menu item label.
    */
   label: string;
 
   /**
-   * 菜单项目 Key
+   * Menu item key.
    */
   key: string;
 
   /**
-   * 是否禁用
+   * Disable the current menu item.
    */
   disabled?: boolean;
 }
 
 /**
- * 菜单 Props
+ * Menu props.
  */
-export interface MenuProps {
-  /**
-   * 菜单项目
-   */
+export interface MenuProps extends Pick<SelectOptions, 'selectedKeys'> {
   items: Item[];
 
   /**
-   * 是否允许多选
+   * Allow multiple menus.
    */
   multiple?: boolean;
-
-  /**
-   * 菜单选项集合
-   */
   children?: React.ReactElement<MenuItemProps>[];
 
   /**
-   * 当前选中的菜单项 key 集合
-   */
-  selectedKeys?: string[];
-
-  /**
-   * 初始选中的菜单项 key 集合
+   * Set the default check menu option key.
    */
   defaultSelectedKeys?: string[];
 
   /**
-   * 监听选择
+   * Listen for changes in menu options.
    */
   onSelect?: (options: SelectOptions) => void;
 }
