@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import * as React from 'react';
+import {useEffect, useState} from 'react';
 import {HandleEvent, handleEvent} from '@bearei/react-util';
 import {MenuItemProps} from './MenuItem';
 
