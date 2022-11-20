@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 import {Menu} from '../../src/components/Menu';
 import {MenuItem} from '../../src/components/MenuItem';
 
-const items = [
+const menus = [
   {label: 'MenuItem1', key: '1'},
   {label: 'MenuItem2', key: '2'},
   {label: 'MenuItem3', key: '3', disabled: true},
@@ -14,8 +14,8 @@ const items = [
 describe('test/components/Menu.test.ts', () => {
   test('It should be a render menu', async () => {
     const {getByDataCy} = render(
-      <Menu items={items}>
-        {items.map(({label, key}) => (
+      <Menu menus={menus}>
+        {menus.map(({label, key}) => (
           <MenuItem key={key} index={key}>
             <div data-cy={`${label}-${key}`}>{label}</div>
           </MenuItem>
@@ -32,13 +32,13 @@ describe('test/components/Menu.test.ts', () => {
     const user = userEvent.setup();
     const {getByDataCy} = render(
       <Menu
-        items={items}
+        menus={menus}
         defaultSelectedKeys={['1']}
         onSelect={selectOptions => {
           selectedKeys = selectOptions.selectedKeys;
         }}
       >
-        {items.map(({label, key}) => (
+        {menus.map(({label, key}) => (
           <MenuItem key={key} index={key}>
             <div data-cy={`${label}-${key}`}>{label}</div>
           </MenuItem>
@@ -56,14 +56,14 @@ describe('test/components/Menu.test.ts', () => {
     const user = userEvent.setup();
     const {getByDataCy} = render(
       <Menu
-        items={items}
+        menus={menus}
         multiple
         selectedKeys={['1']}
         onSelect={selectOptions => {
           selectedKeys = selectOptions.selectedKeys;
         }}
       >
-        {items.map(({label, key}) => (
+        {menus.map(({label, key}) => (
           <MenuItem key={key} index={key}>
             <div data-cy={`${label}-${key}`}>{label}</div>
           </MenuItem>
