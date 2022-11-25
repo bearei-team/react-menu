@@ -1,85 +1,132 @@
-import * as React from 'react';
-import {useEffect, useState} from 'react';
-import {HandleEvent, handleEvent} from '@bearei/react-util';
-import {MenuItemProps} from './MenuItem';
+import {useEffect, useState, useId} from 'react';
+import handleEvent from '@bearei/react-util/lib/event';
+import type {HandleEvent} from '@bearei/react-util/lib/event';
+import type {ReactNode, Ref} from 'react';
+import MenuItem, {BaseMenuItemProps} from './MenuItem';
 
 /**
- * Listen for menu selection to become an options.
+ * Select change options from the menu
  */
-export interface SelectOptions {
+export interface SelectOptions<T, E = React.MouseEvent<T, MouseEvent>> {
   /**
-   * The currently selected menu Key.
+   * The menu item key for the current action
    */
   key?: string;
 
   /**
-   * The currently selected completed menu key.
+   * Select the completed menu item keys
    */
   selectedKeys?: string[];
+
+  /**
+   * Menu item event
+   */
+  event?: E;
 }
 
 /**
- * Menu item options.
+ * Base menu props
  */
-export interface MenuItemOptions {
+export interface BaseMenuProps<T>
+  extends Pick<SelectOptions<T>, 'selectedKeys'> {
   /**
-   * Menu item label.
+   * Custom menu Ref
    */
-  label: string;
+  ref?: Ref<T>;
 
   /**
-   * Menu item key.
+   * Menu items
    */
-  key: string;
+  items: BaseMenuItemProps[];
 
   /**
-   * Disable the current menu item.
-   */
-  disabled?: boolean;
-}
-
-/**
- * Menu props.
- */
-export interface MenuProps extends Pick<SelectOptions, 'selectedKeys'> {
-  menus: MenuItemOptions[];
-
-  /**
-   * Allow multiple menus.
+   * Sets whether or not to be a multiple-choice menu
    */
   multiple?: boolean;
-  children?: React.ReactElement<MenuItemProps>[];
 
   /**
-   * Set the default check menu option key.
+   * Custom menu item expansion icon
+   */
+  expandIcon?: ReactNode;
+
+  /**
+   * Menu mode
+   */
+  mode: 'vertical' | 'horizontal' | 'inline';
+
+  /**
+   * Set the default selection menu items
    */
   defaultSelectedKeys?: string[];
 
   /**
-   * Listen for changes in menu options.
+   * Sets the default expanded menu item
    */
-  onSelect?: (options: SelectOptions) => void;
+  defaultOpenKeys?: string[];
+
+  /**
+   * A callback when a menu item is selected
+   */
+  onSelect?: <E>(options: SelectOptions<T, E>) => void;
 }
 
-export const Menu: React.FC<MenuProps> = ({
-  menus,
-  multiple = false,
-  children,
+/**
+ * Menu props
+ */
+export interface MenuProps<T> extends BaseMenuProps<T> {
+  /**
+   * Render the menu main
+   */
+  renderMain?: (props: MenuMainProps<T>) => ReactNode;
+
+  /**
+   * Render the menu container
+   */
+  renderContainer?: (props: MenuContainerProps<T>) => ReactNode;
+}
+
+/**
+ * Menu children props
+ */
+export interface MenuChildrenProps<T>
+  extends Omit<BaseMenuProps<T>, 'ref' | 'onSelect'> {
+  /**
+   * Unique ID of card component
+   */
+  id: string;
+  children?: ReactNode;
+
+  /**
+   * Used to handle some common default events
+   */
+  handleEvent: HandleEvent;
+}
+
+export interface MenuMainProps<T> extends MenuChildrenProps<T> {
+  onSelect: <E>(e: E, key: string) => void;
+}
+
+export type MenuContainerProps<T> = MenuChildrenProps<T>;
+
+function Menu<T>({
+  ref,
+  items,
   selectedKeys,
   defaultSelectedKeys,
+  multiple = false,
   onSelect,
-}) => {
+  renderMain,
+  renderContainer,
+  ...props
+}: MenuProps<T>) {
+  const id = useId();
   const [keys, setKeys] = useState<string[]>([]);
-  const handleSelected = (key: string) => {
-    const disabled = menus.find(menu => key === menu.key)?.disabled;
+  const childrenProps = {...props, items, id, handleEvent};
 
-    if (disabled) {
-      return;
-    }
-
-    const handleSingleSelected = () => (keys.indexOf(key) !== -1 ? [] : [key]);
+  function handleSelected<E>(e: E, key: string) {
+    const handleSingleSelected = () => (keys.includes(key) ? [] : [key]);
     const handleMultipleSelected = () =>
-      keys.indexOf(key) !== -1
+      keys.includes(key)
         ? keys.filter(selectedKey => selectedKey !== key)
         : [...keys, key];
 
@@ -88,28 +135,31 @@ export const Menu: React.FC<MenuProps> = ({
       : handleSingleSelected();
 
     setKeys(nextKeys);
-    onSelect?.({key, selectedKeys: nextKeys});
-  };
+    onSelect?.({key, selectedKeys: nextKeys, event: e});
+  }
 
-  const handleUserEvent = (key: string) => (e: HandleEvent) =>
-    handleEvent(e, () => handleSelected(key));
+  const mainElement = (
+    <>{renderMain?.({...childrenProps, onSelect: handleSelected})}</>
+  );
+
+  const containerElement = (
+    <>
+      {renderContainer?.({...childrenProps, children: mainElement}) ??
+        mainElement}
+    </>
+  );
 
   useEffect(() => {
-    const nextKeys = selectedKeys ? selectedKeys : defaultSelectedKeys;
+    const nextKeys = selectedKeys ?? defaultSelectedKeys;
 
     nextKeys && setKeys(nextKeys);
 
     onSelect?.({selectedKeys: nextKeys});
-  }, [menus, defaultSelectedKeys, selectedKeys, onSelect]);
+  }, [defaultSelectedKeys, selectedKeys, onSelect]);
 
-  return (
-    <>
-      {children &&
-        React.Children.map(children, child =>
-          React.cloneElement(child, {
-            onEvent: handleUserEvent(child.props.index),
-          }),
-        )}
-    </>
-  );
-};
+  return <>{containerElement}</>;
+}
+
+Object.defineProperty(Menu, 'Item', {value: MenuItem});
+
+export default Menu as typeof Menu & {Item: typeof MenuItem};

@@ -22,7 +22,7 @@
     "url": "https://github.com/bear-ei/react-menu/issues"
   },
   "dependencies": {
-    "@bearei/react-util": "^0.0.7",
+    "@bearei/react-util": "^0.0.15",
     "react": "^18.2.0"
   },
   "devDependencies": {
@@ -38,6 +38,7 @@
     "@types/node": "^18.11.9",
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.8",
+    "@types/react-native": "^0.70.7",
     "@types/testing-library__jest-dom": "^5.14.5",
     "@types/webpack": "^5.28.0",
     "@typescript-eslint/eslint-plugin": "^5.43.0",

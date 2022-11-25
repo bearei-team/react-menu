@@ -1519,7 +1519,7 @@ __metadata:
     "@babel/core": ^7.20.2
     "@babel/preset-env": ^7.20.2
     "@babel/preset-react": ^7.18.6
-    "@bearei/react-util": ^0.0.7
+    "@bearei/react-util": ^0.0.15
     "@testing-library/dom": ^8.19.0
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": ^13.4.0
@@ -1529,6 +1529,7 @@ __metadata:
     "@types/node": ^18.11.9
     "@types/react": ^18.0.25
     "@types/react-dom": ^18.0.8
+    "@types/react-native": ^0.70.7
     "@types/testing-library__jest-dom": ^5.14.5
     "@types/webpack": ^5.28.0
     "@typescript-eslint/eslint-plugin": ^5.43.0
@@ -1561,12 +1562,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@bearei/react-util@npm:^0.0.7":
-  version: 0.0.7
-  resolution: "@bearei/react-util@npm:0.0.7"
+"@bearei/react-util@npm:^0.0.15":
+  version: 0.0.15
+  resolution: "@bearei/react-util@npm:0.0.15"
   dependencies:
     react: ^18.2.0
-  checksum: 3b9e2f4b6186a95624b1d49ec879d7c5e0146a1d0bec4e455a2bd6264a71a3d8edc35067f287bc8d07c7c8ae43992e676b6d60cba709e944768bad0f3f81b0b0
+  checksum: 17701971503a42ab0996624d0f488bfbc38fc8bf7ad12237d7c70c1d5c263609ac5fd35b6bb64ad2afc9654b132e75ac633f85e292bd4b466c6af30a75fa79a3
   languageName: node
   linkType: hard
 
@@ -2688,6 +2689,15 @@ __metadata:
   dependencies:
     "@types/react": "*"
   checksum: e744e3feba25fc43733289d4df4d9c0e59fcca7f34e8c89d75f81a339accb2bd70236d69382d47d2c0ad06a1529b2e56aa6171fe175854d60e07156ddceedfcb
+  languageName: node
+  linkType: hard
+
+"@types/react-native@npm:^0.70.7":
+  version: 0.70.7
+  resolution: "@types/react-native@npm:0.70.7"
+  dependencies:
+    "@types/react": "*"
+  checksum: 1a316a780e2095f17660689b6c3bb8a2b47e260bab0d2f485dd4db8c149cab808d22b21d211b0eb26651d5be4cc9f63c11e5f0532befc119f2a5e59309558f37
   languageName: node
   linkType: hard
 
