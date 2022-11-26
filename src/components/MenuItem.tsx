@@ -96,6 +96,10 @@ export interface MenuItemChildrenProps<T>
     BaseMenuItemProps<T>,
     'ref' | 'icon' | 'expandIcon' | 'tooltip'
   > {
+  /**
+   * The unique ID of the component
+   */
+  id: string;
   children?: ReactNode;
 
   /**
@@ -112,13 +116,10 @@ export type MenuItemIconProps<T> = MenuItemChildrenProps<T>;
 export type MenuItemExpandIconProps<T> = MenuItemChildrenProps<T>;
 export type MenuItemMainProps<T> = MenuItemChildrenProps<T>;
 
-export interface MenuItemContainerProps<T>
-  extends Omit<MenuItemChildrenProps<T> & Pick<MenuItemProps<T>, 'ref'>, ''> {
-  /**
-   * The unique ID of the component
-   */
-  id: string;
-}
+export type MenuItemContainerProps<T> = Omit<
+  MenuItemChildrenProps<T> & Pick<MenuItemProps<T>, 'ref'>,
+  ''
+>;
 
 function MenuItem<T>({
   ref,
@@ -136,7 +137,7 @@ function MenuItem<T>({
   ...props
 }: MenuItemProps<T>) {
   const id = useId();
-  const childrenProps = {...props, loading, disabled, handleEvent};
+  const childrenProps = {...props, loading, disabled, id, handleEvent};
 
   function handleCallback<E>(callback: (e: E) => void) {
     const response = !disabled && !loading;
@@ -169,7 +170,6 @@ function MenuItem<T>({
     renderContainer?.({
       ...childrenProps,
       ref,
-      id,
       children: main,
       ...(onClick ? {onClick: handleEvent(handleClick)} : undefined),
       ...(onTouchEnd ? {onTouchEnd: handleEvent(handleTouchEnd)} : undefined),
