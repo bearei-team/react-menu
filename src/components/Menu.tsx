@@ -119,7 +119,7 @@ export type MenuContainerProps<T, E> = MenuChildrenProps<T, E> &
 
 export type MenuType = typeof Menu & {Item: typeof MenuItem};
 
-function Menu<T = HTMLElement, E = React.MouseEvent<T, MouseEvent>>({
+function Menu<T, E = React.MouseEvent<T, MouseEvent>>({
   ref,
   items,
   selectedKeys,
