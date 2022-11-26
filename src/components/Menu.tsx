@@ -1,15 +1,16 @@
-import {useEffect, useState, useId} from 'react';
-import handleEvent from '@bearei/react-util/lib/event';
 import type {HandleEvent} from '@bearei/react-util/lib/event';
+import handleEvent from '@bearei/react-util/lib/event';
 import type {ReactNode, Ref} from 'react';
-import MenuItem, {BaseMenuItemProps} from './MenuItem';
+import {useEffect, useId, useState} from 'react';
+import type {BaseMenuItemProps} from './MenuItem';
+import MenuItem from './MenuItem';
 
 /**
- * Select change options from the menu
+ * Menu items select change options
  */
-export interface SelectOptions<T, E = React.MouseEvent<T, MouseEvent>> {
+export interface SelectOptions<E> {
   /**
-   * The menu item key for the current action
+   * The currently selected menu item key
    */
   key?: string;
 
@@ -19,7 +20,7 @@ export interface SelectOptions<T, E = React.MouseEvent<T, MouseEvent>> {
   selectedKeys?: string[];
 
   /**
-   * Menu item event
+   * Menu item change event
    */
   event?: E;
 }
@@ -27,73 +28,67 @@ export interface SelectOptions<T, E = React.MouseEvent<T, MouseEvent>> {
 /**
  * Base menu props
  */
-export interface BaseMenuProps<T>
-  extends Pick<SelectOptions<T>, 'selectedKeys'> {
-  /**
-   * Custom menu Ref
-   */
+export interface BaseMenuProps<T, E = React.MouseEvent<T, MouseEvent>>
+  extends Pick<SelectOptions<E>, 'selectedKeys'> {
   ref?: Ref<T>;
 
   /**
    * Menu items
    */
-  items: BaseMenuItemProps[];
+  items?: BaseMenuItemProps<T>[];
 
   /**
-   * Sets whether or not to be a multiple-choice menu
+   * Whether to support multiple choice
    */
   multiple?: boolean;
 
   /**
-   * Custom menu item expansion icon
+   * Icon for menu expansion
    */
   expandIcon?: ReactNode;
 
   /**
    * Menu mode
    */
-  mode: 'vertical' | 'horizontal' | 'inline';
+  mode?: 'vertical' | 'horizontal' | 'inline';
 
   /**
-   * Set the default selection menu items
+   * Set the default key to select the completed menu item
    */
   defaultSelectedKeys?: string[];
 
   /**
-   * Sets the default expanded menu item
+   * TODO:
+   * The contents of a menu item prompt
    */
-  defaultOpenKeys?: string[];
+  tooltip?: ReactNode;
 
   /**
-   * A callback when a menu item is selected
+   * A callback when a menu item changes
    */
-  onSelect?: <E>(options: SelectOptions<T, E>) => void;
+  onSelect?: (options: SelectOptions<E>) => void;
 }
 
 /**
  * Menu props
  */
-export interface MenuProps<T> extends BaseMenuProps<T> {
+export interface MenuProps<T, E> extends BaseMenuProps<T, E> {
   /**
    * Render the menu main
    */
-  renderMain?: (props: MenuMainProps<T>) => ReactNode;
+  renderMain?: (props: MenuMainProps<T, E>) => ReactNode;
 
   /**
    * Render the menu container
    */
-  renderContainer?: (props: MenuContainerProps<T>) => ReactNode;
+  renderContainer?: (props: MenuContainerProps<T, E>) => ReactNode;
 }
 
 /**
  * Menu children props
  */
-export interface MenuChildrenProps<T>
-  extends Omit<BaseMenuProps<T>, 'ref' | 'onSelect'> {
-  /**
-   * Unique ID of card component
-   */
-  id: string;
+export interface MenuChildrenProps<T, E>
+  extends Omit<BaseMenuProps<T, E>, 'ref' | 'onSelect'> {
   children?: ReactNode;
 
   /**
@@ -102,13 +97,24 @@ export interface MenuChildrenProps<T>
   handleEvent: HandleEvent;
 }
 
-export interface MenuMainProps<T> extends MenuChildrenProps<T> {
-  onSelect: <E>(e: E, key: string) => void;
+export interface MenuMainProps<T, E> extends MenuChildrenProps<T, E> {
+  /**
+   * A callback when a menu item changes
+   */
+  onSelect: (e: E, key: string) => void;
 }
 
-export type MenuContainerProps<T> = MenuChildrenProps<T>;
+export interface MenuContainerProps<T, E>
+  extends Omit<MenuChildrenProps<T, E> & Pick<MenuProps<T, E>, 'ref'>, ''> {
+  /**
+   * The unique ID of the component
+   */
+  id: string;
+}
 
-function Menu<T>({
+export type MenuType = typeof Menu & {Item: typeof MenuItem};
+
+function Menu<T = HTMLElement, E = React.MouseEvent<T, MouseEvent>>({
   ref,
   items,
   selectedKeys,
@@ -118,12 +124,12 @@ function Menu<T>({
   renderMain,
   renderContainer,
   ...props
-}: MenuProps<T>) {
+}: MenuProps<T, E>) {
   const id = useId();
   const [keys, setKeys] = useState<string[]>([]);
-  const childrenProps = {...props, items, id, handleEvent};
+  const childrenProps = {...props, items, selectedKeys: keys, handleEvent};
 
-  function handleSelected<E>(e: E, key: string) {
+  function handleSelected(e: E, key: string) {
     const handleSingleSelected = () => (keys.includes(key) ? [] : [key]);
     const handleMultipleSelected = () =>
       keys.includes(key)
@@ -138,17 +144,6 @@ function Menu<T>({
     onSelect?.({key, selectedKeys: nextKeys, event: e});
   }
 
-  const mainElement = (
-    <>{renderMain?.({...childrenProps, onSelect: handleSelected})}</>
-  );
-
-  const containerElement = (
-    <>
-      {renderContainer?.({...childrenProps, children: mainElement}) ??
-        mainElement}
-    </>
-  );
-
   useEffect(() => {
     const nextKeys = selectedKeys ?? defaultSelectedKeys;
 
@@ -157,9 +152,13 @@ function Menu<T>({
     onSelect?.({selectedKeys: nextKeys});
   }, [defaultSelectedKeys, selectedKeys, onSelect]);
 
-  return <>{containerElement}</>;
+  const main = renderMain?.({...childrenProps, onSelect: handleSelected});
+  const container =
+    renderContainer?.({...childrenProps, ref, id, children: main}) ?? main;
+
+  return <>{container}</>;
 }
 
 Object.defineProperty(Menu, 'Item', {value: MenuItem});
 
-export default Menu as typeof Menu & {Item: typeof MenuItem};
+export default Menu as MenuType;
