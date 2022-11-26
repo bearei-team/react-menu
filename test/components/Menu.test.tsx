@@ -8,9 +8,15 @@ import MenuItem from '../../src/components/MenuItem';
 import {render} from '../utils/testUtils';
 
 const menus = [
-  {label: 'MenuItem1', key: '1', icon: <i />},
-  {label: 'MenuItem2', key: '2', icon: <i />},
-  {label: 'MenuItem3', key: '3', icon: <i />, disabled: true},
+  {label: 'MenuItem1', key: '1', icon: <i />, expandIcon: <i />},
+  {label: 'MenuItem2', key: '2', icon: <i />, expandIcon: <i />},
+  {
+    label: 'MenuItem3',
+    key: '3',
+    icon: <i />,
+    expandIcon: <i />,
+    disabled: true,
+  },
 ];
 
 const renderMenuItem = (
@@ -20,6 +26,7 @@ const renderMenuItem = (
     icon,
     key,
     label,
+    expandIcon,
     ...props
   }: BaseMenuItemProps<HTMLDivElement>,
   onSelect?: (
@@ -33,6 +40,7 @@ const renderMenuItem = (
     loading={loading}
     disabled={disabled}
     icon={icon}
+    expandIcon={expandIcon}
     index={key}
     label={label}
     onClick={e => key && onSelect?.(e, key)}

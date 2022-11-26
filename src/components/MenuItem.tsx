@@ -93,15 +93,8 @@ export interface MenuItemProps<T> extends BaseMenuItemProps<T> {
  */
 export interface MenuItemChildrenProps<T>
   extends Omit<
-    MenuItemProps<T>,
-    | 'ref'
-    | 'icon'
-    | 'expandIcon'
-    | 'tooltip'
-    | 'renderMain'
-    | 'renderIcon'
-    | 'renderContainer'
-    | 'renderExpandIcon'
+    BaseMenuItemProps<T>,
+    'ref' | 'icon' | 'expandIcon' | 'tooltip'
   > {
   children?: ReactNode;
 
@@ -136,6 +129,7 @@ function MenuItem<T>({
   onClick,
   onPress,
   onTouchEnd,
+  renderExpandIcon,
   renderIcon,
   renderMain,
   renderContainer,
@@ -160,7 +154,7 @@ function MenuItem<T>({
 
   const handPress = handleCallback((e: MenuItemPressEvent) => onPress?.(e));
   const expandIconNode =
-    expandIcon && renderIcon?.({...childrenProps, children: expandIcon});
+    expandIcon && renderExpandIcon?.({...childrenProps, children: expandIcon});
 
   const iconNode = icon && renderIcon?.({...childrenProps, children: icon});
   const main = (
