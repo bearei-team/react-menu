@@ -1,14 +1,19 @@
 import type {HandleEvent} from '@bearei/react-util/lib/event';
 import handleEvent from '@bearei/react-util/lib/event';
-import type {ReactNode, Ref, TouchEvent} from 'react';
+import type {HTMLAttributes, ReactNode, Ref, TouchEvent} from 'react';
 import {useId} from 'react';
-import type {GestureResponderEvent} from 'react-native';
+import type {GestureResponderEvent, ViewProps} from 'react-native';
 import type {BaseMenuProps} from './Menu';
 
 export interface BaseMenuItemProps<T = HTMLElement>
-  extends Pick<
-    BaseMenuProps<T>,
-    'mode' | 'tooltip' | 'expandIcon' | 'selectedKeys'
+  extends Omit<
+    HTMLAttributes<T> &
+      ViewProps &
+      Pick<
+        BaseMenuProps<T>,
+        'mode' | 'tooltip' | 'expandIcon' | 'selectedKeys'
+      >,
+    'onClick' | 'onTouchEnd' | 'onPress'
   > {
   ref?: Ref<T>;
 

@@ -1,7 +1,8 @@
 import type {HandleEvent} from '@bearei/react-util/lib/event';
 import handleEvent from '@bearei/react-util/lib/event';
-import type {ReactNode, Ref} from 'react';
+import type {HTMLAttributes, ReactNode, Ref} from 'react';
 import {useEffect, useId, useState} from 'react';
+import type {ViewProps} from 'react-native';
 import type {BaseMenuItemProps} from './MenuItem';
 import MenuItem from './MenuItem';
 
@@ -29,7 +30,10 @@ export interface SelectOptions<E> {
  * Base menu props
  */
 export interface BaseMenuProps<T, E = React.MouseEvent<T, MouseEvent>>
-  extends Pick<SelectOptions<E>, 'selectedKeys'> {
+  extends Omit<
+    HTMLAttributes<T> & ViewProps & Pick<SelectOptions<E>, 'selectedKeys'>,
+    'onSelect'
+  > {
   ref?: Ref<T>;
 
   /**
