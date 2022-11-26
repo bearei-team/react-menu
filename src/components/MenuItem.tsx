@@ -1,14 +1,19 @@
 import type {HandleEvent} from '@bearei/react-util/lib/event';
 import handleEvent from '@bearei/react-util/lib/event';
-import type {ReactNode, Ref, TouchEvent} from 'react';
+import type {HTMLAttributes, ReactNode, Ref, TouchEvent} from 'react';
 import {useId} from 'react';
-import type {GestureResponderEvent} from 'react-native';
+import type {GestureResponderEvent, ViewProps} from 'react-native';
 import type {BaseMenuProps} from './Menu';
 
 export interface BaseMenuItemProps<T = HTMLElement>
-  extends Pick<
-    BaseMenuProps<T>,
-    'mode' | 'tooltip' | 'expandIcon' | 'selectedKeys'
+  extends Omit<
+    HTMLAttributes<T> &
+      ViewProps &
+      Pick<
+        BaseMenuProps<T>,
+        'mode' | 'tooltip' | 'expandIcon' | 'selectedKeys'
+      >,
+    'onClick' | 'onTouchEnd' | 'onPress'
   > {
   ref?: Ref<T>;
 
@@ -88,16 +93,13 @@ export interface MenuItemProps<T> extends BaseMenuItemProps<T> {
  */
 export interface MenuItemChildrenProps<T>
   extends Omit<
-    MenuItemProps<T>,
-    | 'ref'
-    | 'icon'
-    | 'expandIcon'
-    | 'tooltip'
-    | 'renderMain'
-    | 'renderIcon'
-    | 'renderContainer'
-    | 'renderExpandIcon'
+    BaseMenuItemProps<T>,
+    'ref' | 'icon' | 'expandIcon' | 'tooltip'
   > {
+  /**
+   * The unique ID of the component
+   */
+  id: string;
   children?: ReactNode;
 
   /**
@@ -113,14 +115,8 @@ export type MenuItemPressEvent = GestureResponderEvent;
 export type MenuItemIconProps<T> = MenuItemChildrenProps<T>;
 export type MenuItemExpandIconProps<T> = MenuItemChildrenProps<T>;
 export type MenuItemMainProps<T> = MenuItemChildrenProps<T>;
-
-export interface MenuItemContainerProps<T>
-  extends Omit<MenuItemChildrenProps<T> & Pick<MenuItemProps<T>, 'ref'>, ''> {
-  /**
-   * The unique ID of the component
-   */
-  id: string;
-}
+export type MenuItemContainerProps<T> = MenuItemChildrenProps<T> &
+  Pick<MenuItemProps<T>, 'ref'>;
 
 function MenuItem<T>({
   ref,
@@ -131,13 +127,14 @@ function MenuItem<T>({
   onClick,
   onPress,
   onTouchEnd,
+  renderExpandIcon,
   renderIcon,
   renderMain,
   renderContainer,
   ...props
 }: MenuItemProps<T>) {
   const id = useId();
-  const childrenProps = {...props, loading, disabled, handleEvent};
+  const childrenProps = {...props, loading, disabled, id, handleEvent};
 
   function handleCallback<E>(callback: (e: E) => void) {
     const response = !disabled && !loading;
@@ -155,7 +152,7 @@ function MenuItem<T>({
 
   const handPress = handleCallback((e: MenuItemPressEvent) => onPress?.(e));
   const expandIconNode =
-    expandIcon && renderIcon?.({...childrenProps, children: expandIcon});
+    expandIcon && renderExpandIcon?.({...childrenProps, children: expandIcon});
 
   const iconNode = icon && renderIcon?.({...childrenProps, children: icon});
   const main = (
@@ -170,7 +167,6 @@ function MenuItem<T>({
     renderContainer?.({
       ...childrenProps,
       ref,
-      id,
       children: main,
       ...(onClick ? {onClick: handleEvent(handleClick)} : undefined),
       ...(onTouchEnd ? {onTouchEnd: handleEvent(handleTouchEnd)} : undefined),

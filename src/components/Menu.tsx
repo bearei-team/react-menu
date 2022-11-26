@@ -1,7 +1,8 @@
 import type {HandleEvent} from '@bearei/react-util/lib/event';
 import handleEvent from '@bearei/react-util/lib/event';
-import type {ReactNode, Ref} from 'react';
+import type {HTMLAttributes, ReactNode, Ref} from 'react';
 import {useEffect, useId, useState} from 'react';
+import type {ViewProps} from 'react-native';
 import type {BaseMenuItemProps} from './MenuItem';
 import MenuItem from './MenuItem';
 
@@ -29,7 +30,10 @@ export interface SelectOptions<E> {
  * Base menu props
  */
 export interface BaseMenuProps<T, E = React.MouseEvent<T, MouseEvent>>
-  extends Pick<SelectOptions<E>, 'selectedKeys'> {
+  extends Omit<
+    HTMLAttributes<T> & ViewProps & Pick<SelectOptions<E>, 'selectedKeys'>,
+    'onSelect'
+  > {
   ref?: Ref<T>;
 
   /**
@@ -89,6 +93,10 @@ export interface MenuProps<T, E> extends BaseMenuProps<T, E> {
  */
 export interface MenuChildrenProps<T, E>
   extends Omit<BaseMenuProps<T, E>, 'ref' | 'onSelect'> {
+  /**
+   * The unique ID of the component
+   */
+  id: string;
   children?: ReactNode;
 
   /**
@@ -104,13 +112,8 @@ export interface MenuMainProps<T, E> extends MenuChildrenProps<T, E> {
   onSelect: (e: E, key: string) => void;
 }
 
-export interface MenuContainerProps<T, E>
-  extends Omit<MenuChildrenProps<T, E> & Pick<MenuProps<T, E>, 'ref'>, ''> {
-  /**
-   * The unique ID of the component
-   */
-  id: string;
-}
+export type MenuContainerProps<T, E> = MenuChildrenProps<T, E> &
+  Pick<MenuProps<T, E>, 'ref'>;
 
 export type MenuType = typeof Menu & {Item: typeof MenuItem};
 
@@ -127,7 +130,7 @@ function Menu<T = HTMLElement, E = React.MouseEvent<T, MouseEvent>>({
 }: MenuProps<T, E>) {
   const id = useId();
   const [keys, setKeys] = useState<string[]>([]);
-  const childrenProps = {...props, items, selectedKeys: keys, handleEvent};
+  const childrenProps = {...props, items, selectedKeys: keys, id, handleEvent};
 
   function handleSelected(e: E, key: string) {
     const handleSingleSelected = () => (keys.includes(key) ? [] : [key]);
@@ -154,7 +157,7 @@ function Menu<T = HTMLElement, E = React.MouseEvent<T, MouseEvent>>({
 
   const main = renderMain?.({...childrenProps, onSelect: handleSelected});
   const container =
-    renderContainer?.({...childrenProps, ref, id, children: main}) ?? main;
+    renderContainer?.({...childrenProps, ref, children: main}) ?? main;
 
   return <>{container}</>;
 }

@@ -44,7 +44,7 @@ A basic menu component that supports react and native react.
 | icon | `ReactNode` | ✘ | Menu item icon |
 | disabled | `boolean` | ✘ | Whether or not to disable the menu item |
 | loading | `boolean` | ✘ | Whether the menu item is loading |
-| onClick | `(e: MenuItemClickEvent<T>) => void` | ✘ | A callback when a menu item is clicked |
+| onClick | `(e: MenuItemClickEvent) => void` | ✘ | A callback when a menu item is clicked |
 | onTouchEnd | `(e: MenuItemTouchEvent) => void` | ✘ | A callback for pressing a menu item |
 | onPress | `(e: MenuItemPressEvent) => void` | ✘ | A callback for pressing a menu item -- react native |
 | renderIcon | ` (props: MenuItemIconProps) => ReactNode` | ✘ | Render the menu item icon |
