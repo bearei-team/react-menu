@@ -112,10 +112,8 @@ export interface MenuMainProps<T, E> extends MenuChildrenProps<T, E> {
   onSelect: (e: E, key: string) => void;
 }
 
-export type MenuContainerProps<T, E> = Omit<
-  MenuChildrenProps<T, E> & Pick<MenuProps<T, E>, 'ref'>,
-  ''
->;
+export type MenuContainerProps<T, E> = MenuChildrenProps<T, E> &
+  Pick<MenuProps<T, E>, 'ref'>;
 
 export type MenuType = typeof Menu & {Item: typeof MenuItem};
 

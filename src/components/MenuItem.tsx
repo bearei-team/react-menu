@@ -115,11 +115,8 @@ export type MenuItemPressEvent = GestureResponderEvent;
 export type MenuItemIconProps<T> = MenuItemChildrenProps<T>;
 export type MenuItemExpandIconProps<T> = MenuItemChildrenProps<T>;
 export type MenuItemMainProps<T> = MenuItemChildrenProps<T>;
-
-export type MenuItemContainerProps<T> = Omit<
-  MenuItemChildrenProps<T> & Pick<MenuItemProps<T>, 'ref'>,
-  ''
->;
+export type MenuItemContainerProps<T> = MenuItemChildrenProps<T> &
+  Pick<MenuItemProps<T>, 'ref'>;
 
 function MenuItem<T>({
   ref,
