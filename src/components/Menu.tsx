@@ -29,7 +29,7 @@ export interface SelectOptions<E> {
 /**
  * Base menu props
  */
-export interface BaseMenuProps<T, E = React.MouseEvent<T, MouseEvent>>
+export interface BaseMenuProps<T, E>
   extends Omit<
     DetailedHTMLProps<HTMLAttributes<T>, T> &
       ViewProps &
@@ -41,7 +41,7 @@ export interface BaseMenuProps<T, E = React.MouseEvent<T, MouseEvent>>
   /**
    * Menu items
    */
-  items?: BaseMenuItemProps<T>[];
+  items?: (BaseMenuItemProps<T, E> & {key?: string})[];
 
   /**
    * Whether to support multiple choice
@@ -115,7 +115,7 @@ export interface MenuMainProps<T, E> extends MenuChildrenProps<T, E> {
 }
 
 export type MenuContainerProps<T, E> = MenuChildrenProps<T, E> &
-  Pick<MenuProps<T, E>, 'ref'>;
+  Pick<BaseMenuProps<T, E>, 'ref'>;
 
 export type MenuType = typeof Menu & {Item: typeof MenuItem};
 
