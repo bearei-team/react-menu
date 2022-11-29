@@ -107,6 +107,11 @@ export interface MenuItemChildrenProps<T, E>
   children?: ReactNode;
 
   /**
+   * Set the menu item status
+   */
+  status?: 'normal' | 'selected';
+
+  /**
    * Used to handle some common default events
    */
   handleEvent: HandleEvent;
@@ -128,6 +133,8 @@ function MenuItem<T, E = MenuItemClickEvent<T>>({
   expandIcon,
   disabled,
   loading,
+  selectedKeys,
+  index,
   onClick,
   onPress,
   onTouchEnd,
@@ -138,7 +145,18 @@ function MenuItem<T, E = MenuItemClickEvent<T>>({
   ...props
 }: MenuItemProps<T, E>) {
   const id = useId();
-  const childrenProps = {...props, loading, disabled, id, handleEvent};
+  const childrenProps = {
+    ...props,
+    index,
+    selectedKeys,
+    status: (selectedKeys?.includes(index ?? '')
+      ? 'selected'
+      : 'normal') as MenuItemChildrenProps<T, E>['status'],
+    loading,
+    disabled,
+    id,
+    handleEvent,
+  };
 
   function handleCallback<C>(callback: (e: C) => void) {
     const response = !disabled && !loading;
