@@ -1,6 +1,6 @@
 # react-menu
 
-A basic menu component that supports react and native react.
+Base menu components that support React and React native
 
 ## Installation
 
@@ -8,26 +8,26 @@ A basic menu component that supports react and native react.
 
 ## Parameters
 
-#### SelectOptions
+#### Menu Options
 
 | Name | Type | Required | Description |
 | :-- | --: | --: | :-- |
-| key | `string` | ✘ | The currently selected menu item key |
-| selectedKeys | `string[]` | ✘ | Select the completed menu item keys |
-| event | `React.MouseEvent` `GestureResponderEvent` | ✘ | Menu item change event |
+| key | `string` | ✘ | Currently select the completed menu item key |
+| selectedKeys | `string[]` | ✘ | All select the completed menu item key |
+| event | `React.MouseEvent` `MenuItemTouchEvent` `GestureResponderEvent` | ✘ | Triggers an event that completes the selection of the current menu item |
 
 #### Menu
 
 | Name | Type | Required | Description |
 | :-- | --: | --: | :-- |
 | items | `BaseMenuItemProps[]` | ✘ | Menu items |
-| multiple | `boolean` | ✘ | Whether to support multiple choice |
+| multiple | `boolean` | ✘ | Allow multiple menu items |
 | expandIcon | `ReactNode` | ✘ | Icon for menu expansion |
 | mode | `vertical` `horizontal` `inline` | ✘ | Menu mode |
-| selectedKeys | `string[]` | ✘ | Select the completed menu item keys |
-| defaultSelectedKeys | `string[]` | ✘ | Set the default key to select the completed menu item |
-| tooltip | `ReactNode` | ✘ | The contents of a menu item prompt |
-| onSelect | `(options: SelectOptions) => void` | ✘ | A callback when a menu item changes |
+| selectedKeys | `string[]` | ✘ | All select the completed menu item key |
+| defaultSelectedKeys | `string[]` | ✘ | The menu selects the completion item by default |
+| tooltip | `ReactNode` | ✘ | Menu tip |
+| onSelect | `(options: MenuOptions) => void` | ✘ | Call this function when menu item selection is complete |
 | renderMain | `(props: MenuMainProps) => ReactNode` | ✘ | Render the menu main |
 | renderContainer | `(props: MenuContainerProps) => ReactNode` | ✘ | Render the menu container |
 
@@ -36,17 +36,17 @@ A basic menu component that supports react and native react.
 | Name | Type | Required | Description |
 | :-- | --: | --: | :-- |
 | mode | `vertical` `horizontal` `inline` | ✘ | Menu mode |
-| tooltip | `ReactNode` | ✘ | The contents of a menu item prompt |
+| tooltip | `ReactNode` | ✘ | Menu tip |
 | expandIcon | `ReactNode` | ✘ | Icon for menu expansion |
-| selectedKeys | `string[]` | ✘ | Select the completed menu item keys |
-| label | `string` | ✘ | Menu item show label |
-| key | `string` | ✘ | Menu item key |
+| selectedKeys | `string[]` | ✘ | All select the completed menu item key |
+| label | `string` | ✘ | Menu item label |
+| index | `string` | ✘ | Menu item index |
 | icon | `ReactNode` | ✘ | Menu item icon |
 | disabled | `boolean` | ✘ | Whether or not to disable the menu item |
 | loading | `boolean` | ✘ | Whether the menu item is loading |
-| onClick | `(e: MenuItemClickEvent) => void` | ✘ | A callback when a menu item is clicked |
-| onTouchEnd | `(e: MenuItemTouchEvent) => void` | ✘ | A callback for pressing a menu item |
-| onPress | `(e: MenuItemPressEvent) => void` | ✘ | A callback for pressing a menu item -- react native |
+| onClick | `(e: MenuItemClickEvent) => void` | ✘ | Call this function back when you click the menu item |
+| onTouchEnd | `(e: MenuItemTouchEvent) => void` | ✘ | Call this function after pressing the menu item |
+| onPress | `(e: MenuItemPressEvent) => void` | ✘ | Call this function after pressing the menu item -- react native |
 | renderIcon | ` (props: MenuItemIconProps) => ReactNode` | ✘ | Render the menu item icon |
 | renderExpandIcon | ` (props: MenuItemExpandIconProps) => ReactNode` | ✘ | Render the menu item expansion icon |
 | renderMain | ` (props: MenuItemMainProps) => ReactNode` | ✘ | Render the menu item main |

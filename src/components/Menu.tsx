@@ -1,27 +1,27 @@
 import type {HandleEvent} from '@bearei/react-util/lib/event';
 import handleEvent from '@bearei/react-util/lib/event';
+import {useCallback, useEffect, useId, useState} from 'react';
 import type {DetailedHTMLProps, HTMLAttributes, ReactNode, Ref} from 'react';
-import {useEffect, useId, useState} from 'react';
 import type {ViewProps} from 'react-native';
 import type {BaseMenuItemProps} from './MenuItem';
 import MenuItem from './MenuItem';
 
 /**
- * Menu items select change options
+ * Menu options
  */
-export interface SelectOptions<E> {
+export interface MenuOptions<E> {
   /**
-   * The currently selected menu item key
+   * Currently select the completed menu item key
    */
   key?: string;
 
   /**
-   * Select the completed menu item keys
+   * All select the completed menu item key
    */
   selectedKeys?: string[];
 
   /**
-   * Menu item change event
+   * Triggers an event that completes the selection of the current menu item
    */
   event?: E;
 }
@@ -29,22 +29,25 @@ export interface SelectOptions<E> {
 /**
  * Base menu props
  */
-export interface BaseMenuProps<T, E = React.MouseEvent<T, MouseEvent>>
+export interface BaseMenuProps<T, E>
   extends Omit<
     DetailedHTMLProps<HTMLAttributes<T>, T> &
       ViewProps &
-      Pick<SelectOptions<E>, 'selectedKeys'>,
+      Pick<MenuOptions<E>, 'selectedKeys'>,
     'onSelect'
   > {
+  /**
+   * Custom ref
+   */
   ref?: Ref<T>;
 
   /**
    * Menu items
    */
-  items?: BaseMenuItemProps<T>[];
+  items?: (BaseMenuItemProps<T, E> & {key?: string})[];
 
   /**
-   * Whether to support multiple choice
+   * Allow multiple menu items
    */
   multiple?: boolean;
 
@@ -59,20 +62,20 @@ export interface BaseMenuProps<T, E = React.MouseEvent<T, MouseEvent>>
   mode?: 'vertical' | 'horizontal' | 'inline';
 
   /**
-   * Set the default key to select the completed menu item
+   * The menu selects the completion item by default
    */
   defaultSelectedKeys?: string[];
 
   /**
    * TODO:
-   * The contents of a menu item prompt
+   * Menu tip
    */
   tooltip?: ReactNode;
 
   /**
-   * A callback when a menu item changes
+   * Call this function when menu item selection is complete
    */
-  onSelect?: (options: SelectOptions<E>) => void;
+  onSelect?: (options: MenuOptions<E>) => void;
 }
 
 /**
@@ -96,7 +99,7 @@ export interface MenuProps<T, E> extends BaseMenuProps<T, E> {
 export interface MenuChildrenProps<T, E>
   extends Omit<BaseMenuProps<T, E>, 'ref' | 'onSelect'> {
   /**
-   * The unique ID of the component
+   * Component unique ID
    */
   id: string;
   children?: ReactNode;
@@ -108,54 +111,83 @@ export interface MenuChildrenProps<T, E>
 }
 
 export interface MenuMainProps<T, E> extends MenuChildrenProps<T, E> {
-  /**
-   * A callback when a menu item changes
-   */
   onSelect: (e: E, key: string) => void;
 }
 
 export type MenuContainerProps<T, E> = MenuChildrenProps<T, E> &
-  Pick<MenuProps<T, E>, 'ref'>;
+  Pick<BaseMenuProps<T, E>, 'ref'>;
 
 export type MenuType = typeof Menu & {Item: typeof MenuItem};
 
 function Menu<T, E = React.MouseEvent<T, MouseEvent>>({
   ref,
   items,
+  multiple,
   selectedKeys,
   defaultSelectedKeys,
-  multiple = false,
   onSelect,
   renderMain,
   renderContainer,
   ...props
 }: MenuProps<T, E>) {
   const id = useId();
-  const [keys, setKeys] = useState<string[]>([]);
-  const childrenProps = {...props, items, selectedKeys: keys, id, handleEvent};
+  const [status, setStatus] = useState('idle');
+  const [menuOptions, setSelectOptions] = useState<MenuOptions<E>>({
+    selectedKeys: [],
+  });
+
+  const childrenProps = {
+    ...props,
+    items,
+    selectedKeys: menuOptions.selectedKeys,
+    id,
+    handleEvent,
+  };
+
+  const handleMenuOptionsChange = useCallback(
+    (options: MenuOptions<E>) => onSelect?.(options),
+    [onSelect],
+  );
 
   function handleSelected(e: E, key: string) {
-    const handleSingleSelected = () => (keys.includes(key) ? [] : [key]);
+    const {selectedKeys = []} = menuOptions;
+    const handleSingleSelected = () =>
+      selectedKeys.includes(key) ? [] : [key];
+
     const handleMultipleSelected = () =>
-      keys.includes(key)
-        ? keys.filter(selectedKey => selectedKey !== key)
-        : [...keys, key];
+      selectedKeys.includes(key)
+        ? selectedKeys.filter(selectedKey => selectedKey !== key)
+        : [...selectedKeys, key];
 
     const nextKeys = multiple
       ? handleMultipleSelected()
       : handleSingleSelected();
 
-    setKeys(nextKeys);
-    onSelect?.({key, selectedKeys: nextKeys, event: e});
+    const options = {key, selectedKeys: nextKeys, event: e};
+
+    setSelectOptions(options);
+    handleMenuOptionsChange(options);
   }
 
   useEffect(() => {
-    const nextKeys = selectedKeys ?? defaultSelectedKeys;
+    const nextSelectedKeys =
+      status !== 'idle' ? selectedKeys : defaultSelectedKeys ?? selectedKeys;
 
-    nextKeys && setKeys(nextKeys);
+    const sort = (array = [] as string[]) => [...array].sort().toString();
 
-    onSelect?.({selectedKeys: nextKeys});
-  }, [defaultSelectedKeys, selectedKeys, onSelect]);
+    nextSelectedKeys &&
+      setSelectOptions(currentOptions => {
+        const change =
+          sort(currentOptions.selectedKeys) !== sort(nextSelectedKeys) &&
+          status === 'succeeded';
+
+        change && handleMenuOptionsChange({selectedKeys: nextSelectedKeys});
+
+        return {selectedKeys: nextSelectedKeys};
+      });
+
+    status === 'idle' && setStatus('succeeded');
+  }, [defaultSelectedKeys, handleMenuOptionsChange, selectedKeys, status]);
 
   const main = renderMain?.({...childrenProps, onSelect: handleSelected});
   const container =

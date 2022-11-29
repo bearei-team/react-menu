@@ -28,7 +28,10 @@ const renderMenuItem = (
     label,
     expandIcon,
     ...props
-  }: BaseMenuItemProps<HTMLDivElement>,
+  }: BaseMenuItemProps<
+    HTMLDivElement,
+    React.MouseEvent<HTMLDivElement, MouseEvent>
+  > & {key?: string},
   onSelect?: (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     key: string,

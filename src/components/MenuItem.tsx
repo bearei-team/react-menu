@@ -11,27 +11,28 @@ import {useId} from 'react';
 import type {GestureResponderEvent, ViewProps} from 'react-native';
 import type {BaseMenuProps} from './Menu';
 
-export interface BaseMenuItemProps<T = HTMLElement>
+/**
+ * Base menu item props
+ */
+export interface BaseMenuItemProps<T, E>
   extends Omit<
     DetailedHTMLProps<HTMLAttributes<T>, T> &
       ViewProps &
       Pick<
-        BaseMenuProps<T>,
+        BaseMenuProps<T, E>,
         'mode' | 'tooltip' | 'expandIcon' | 'selectedKeys'
       >,
     'onClick' | 'onTouchEnd' | 'onPress'
   > {
+  /**
+   * Custom ref
+   */
   ref?: Ref<T>;
 
   /**
-   * Menu item show label
+   * Menu item label
    */
   label?: string;
-
-  /**
-   * Menu item key
-   */
-  key?: string;
 
   /**
    * Menu item index
@@ -54,17 +55,17 @@ export interface BaseMenuItemProps<T = HTMLElement>
   loading?: boolean;
 
   /**
-   * A callback when a menu item is clicked
+   * Call this function back when you click the menu item
    */
   onClick?: (e: MenuItemClickEvent<T>) => void;
 
   /**
-   * A callback for pressing a menu item
+   * Call this function after pressing the menu item
    */
   onTouchEnd?: (e: MenuItemTouchEvent<T>) => void;
 
   /**
-   * A callback for pressing a menu item -- react native
+   * Call this function after pressing the menu item -- react native
    */
   onPress?: (e: MenuItemPressEvent) => void;
 }
@@ -72,38 +73,35 @@ export interface BaseMenuItemProps<T = HTMLElement>
 /**
  * Menu item props
  */
-export interface MenuItemProps<T> extends BaseMenuItemProps<T> {
+export interface MenuItemProps<T, E> extends BaseMenuItemProps<T, E> {
   /**
    * Render the menu item icon
    */
-  renderIcon?: (props: MenuItemIconProps<T>) => ReactNode;
+  renderIcon?: (props: MenuItemIconProps<T, E>) => ReactNode;
 
   /**
    * Render the menu item expansion icon
    */
-  renderExpandIcon?: (props: MenuItemExpandIconProps<T>) => ReactNode;
+  renderExpandIcon?: (props: MenuItemExpandIconProps<T, E>) => ReactNode;
 
   /**
    * Render the menu item main
    */
-  renderMain?: (props: MenuItemMainProps<T>) => ReactNode;
+  renderMain?: (props: MenuItemMainProps<T, E>) => ReactNode;
 
   /**
    * Render the menu item container
    */
-  renderContainer?: (props: MenuItemContainerProps<T>) => ReactNode;
+  renderContainer?: (props: MenuItemContainerProps<T, E>) => ReactNode;
 }
 
-/**
- * Menu item children props
- */
-export interface MenuItemChildrenProps<T>
+export interface MenuItemChildrenProps<T, E>
   extends Omit<
-    BaseMenuItemProps<T>,
+    BaseMenuItemProps<T, E>,
     'ref' | 'icon' | 'expandIcon' | 'tooltip'
   > {
   /**
-   * The unique ID of the component
+   * Component unique ID
    */
   id: string;
   children?: ReactNode;
@@ -118,13 +116,13 @@ export type MenuItemClickEvent<T> = React.MouseEvent<T, MouseEvent>;
 export type MenuItemTouchEvent<T> = TouchEvent<T>;
 export type MenuItemPressEvent = GestureResponderEvent;
 
-export type MenuItemIconProps<T> = MenuItemChildrenProps<T>;
-export type MenuItemExpandIconProps<T> = MenuItemChildrenProps<T>;
-export type MenuItemMainProps<T> = MenuItemChildrenProps<T>;
-export type MenuItemContainerProps<T> = MenuItemChildrenProps<T> &
-  Pick<MenuItemProps<T>, 'ref'>;
+export type MenuItemIconProps<T, E> = MenuItemChildrenProps<T, E>;
+export type MenuItemExpandIconProps<T, E> = MenuItemChildrenProps<T, E>;
+export type MenuItemMainProps<T, E> = MenuItemChildrenProps<T, E>;
+export type MenuItemContainerProps<T, E> = MenuItemChildrenProps<T, E> &
+  Pick<BaseMenuItemProps<T, E>, 'ref'>;
 
-function MenuItem<T>({
+function MenuItem<T, E = React.MouseEvent<T, MouseEvent>>({
   ref,
   icon,
   expandIcon,
@@ -133,19 +131,19 @@ function MenuItem<T>({
   onClick,
   onPress,
   onTouchEnd,
-  renderExpandIcon,
   renderIcon,
   renderMain,
+  renderExpandIcon,
   renderContainer,
   ...props
-}: MenuItemProps<T>) {
+}: MenuItemProps<T, E>) {
   const id = useId();
   const childrenProps = {...props, loading, disabled, id, handleEvent};
 
-  function handleCallback<E>(callback: (e: E) => void) {
+  function handleCallback<C>(callback: (e: C) => void) {
     const response = !disabled && !loading;
 
-    return (e: E) => response && callback(e);
+    return (e: C) => response && callback(e);
   }
 
   const handleClick = handleCallback((e: MenuItemClickEvent<T>) =>
