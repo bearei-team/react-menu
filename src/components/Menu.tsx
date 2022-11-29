@@ -110,6 +110,8 @@ export interface MenuChildrenProps<T, E>
   handleEvent: HandleEvent;
 }
 
+export type MenuClickEvent<T> = React.MouseEvent<T, MouseEvent>;
+
 export interface MenuMainProps<T, E> extends MenuChildrenProps<T, E> {
   onSelect: (e: E, key: string) => void;
 }
@@ -119,7 +121,7 @@ export type MenuContainerProps<T, E> = MenuChildrenProps<T, E> &
 
 export type MenuType = typeof Menu & {Item: typeof MenuItem};
 
-function Menu<T, E = React.MouseEvent<T, MouseEvent>>({
+function Menu<T, E = MenuClickEvent<T>>({
   ref,
   items,
   multiple,

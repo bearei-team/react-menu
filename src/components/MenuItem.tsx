@@ -122,7 +122,7 @@ export type MenuItemMainProps<T, E> = MenuItemChildrenProps<T, E>;
 export type MenuItemContainerProps<T, E> = MenuItemChildrenProps<T, E> &
   Pick<BaseMenuItemProps<T, E>, 'ref'>;
 
-function MenuItem<T, E = React.MouseEvent<T, MouseEvent>>({
+function MenuItem<T, E = MenuItemClickEvent<T>>({
   ref,
   icon,
   expandIcon,

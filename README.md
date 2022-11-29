@@ -31,7 +31,7 @@ Base menu components that support React and React native
 | renderMain | `(props: MenuMainProps) => ReactNode` | ✘ | Render the menu main |
 | renderContainer | `(props: MenuContainerProps) => ReactNode` | ✘ | Render the menu container |
 
-### MenuItem
+#### MenuItem
 
 | Name | Type | Required | Description |
 | :-- | --: | --: | :-- |
