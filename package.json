@@ -1,6 +1,6 @@
 {
   "name": "@bearei/react-menu",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "module": "./lib-esm/index.js",
@@ -92,5 +92,5 @@
   "engines": {
     "node": ">=16.0.0"
   },
-  "packageManager": "yarn@3.2.4"
+  "packageManager": "yarn@3.3.0"
 }

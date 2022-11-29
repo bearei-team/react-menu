@@ -11,6 +11,9 @@ import {useId} from 'react';
 import type {GestureResponderEvent, ViewProps} from 'react-native';
 import type {BaseMenuProps} from './Menu';
 
+/**
+ * Base menu item props
+ */
 export interface BaseMenuItemProps<T, E>
   extends Omit<
     DetailedHTMLProps<HTMLAttributes<T>, T> &
@@ -21,10 +24,13 @@ export interface BaseMenuItemProps<T, E>
       >,
     'onClick' | 'onTouchEnd' | 'onPress'
   > {
+  /**
+   * Custom ref
+   */
   ref?: Ref<T>;
 
   /**
-   * Menu item show label
+   * Menu item label
    */
   label?: string;
 
@@ -49,17 +55,17 @@ export interface BaseMenuItemProps<T, E>
   loading?: boolean;
 
   /**
-   * A callback when a menu item is clicked
+   * Call this function back when you click the menu item
    */
   onClick?: (e: MenuItemClickEvent<T>) => void;
 
   /**
-   * A callback for pressing a menu item
+   * Call this function after pressing the menu item
    */
   onTouchEnd?: (e: MenuItemTouchEvent<T>) => void;
 
   /**
-   * A callback for pressing a menu item -- react native
+   * Call this function after pressing the menu item -- react native
    */
   onPress?: (e: MenuItemPressEvent) => void;
 }
@@ -89,16 +95,13 @@ export interface MenuItemProps<T, E> extends BaseMenuItemProps<T, E> {
   renderContainer?: (props: MenuItemContainerProps<T, E>) => ReactNode;
 }
 
-/**
- * Menu item children props
- */
 export interface MenuItemChildrenProps<T, E>
   extends Omit<
     BaseMenuItemProps<T, E>,
     'ref' | 'icon' | 'expandIcon' | 'tooltip'
   > {
   /**
-   * The unique ID of the component
+   * Component unique ID
    */
   id: string;
   children?: ReactNode;
@@ -128,9 +131,9 @@ function MenuItem<T, E = React.MouseEvent<T, MouseEvent>>({
   onClick,
   onPress,
   onTouchEnd,
-  renderExpandIcon,
   renderIcon,
   renderMain,
+  renderExpandIcon,
   renderContainer,
   ...props
 }: MenuItemProps<T, E>) {
