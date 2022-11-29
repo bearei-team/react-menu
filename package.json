@@ -5,7 +5,7 @@
   "types": "./lib/index.d.ts",
   "module": "./lib-esm/index.js",
   "author": "bearei <bear_ei@outlook.com>",
-  "description": "A basic menu component that supports react and native react.",
+  "description": "Base menu components that support React and React native",
   "license": "MIT",
   "readmeFilename": "README.md",
   "keywords": [

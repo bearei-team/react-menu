@@ -1,6 +1,6 @@
 # react-menu
 
-A basic menu component that supports react and native react.
+Base menu components that support React and React native
 
 ## Installation
 
