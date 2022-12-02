@@ -191,8 +191,11 @@ const Menu = <T extends HTMLElement>({
 
   const main = renderMain?.({...childrenProps, onSelect: handleSelected});
   const content = <>{main}</>;
-  const container =
-    renderContainer?.({...childrenProps, ref, children: content}) ?? content;
+  const container = renderContainer?.({
+    ...childrenProps,
+    ref,
+    children: content,
+  });
 
   return <>{container}</>;
 };
