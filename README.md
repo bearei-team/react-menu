@@ -14,7 +14,7 @@ Base menu components that support React and React native
 | :-- | --: | --: | :-- |
 | key | `string` | ✘ | Currently select the completed menu item key |
 | selectedKeys | `string[]` | ✘ | All select the completed menu item key |
-| event | `React.MouseEvent` `MenuItemTouchEvent` `GestureResponderEvent` | ✘ | Triggers an event that completes the selection of the current menu item |
+| event | `unknown` | ✘ | Triggers an event that completes the selection of the current menu item |
 
 #### Menu
 
@@ -44,9 +44,9 @@ Base menu components that support React and React native
 | icon | `ReactNode` | ✘ | Menu item icon |
 | disabled | `boolean` | ✘ | Whether or not to disable the menu item |
 | loading | `boolean` | ✘ | Whether the menu item is loading |
-| onClick | `(e: MenuItemClickEvent) => void` | ✘ | Call this function back when you click the menu item |
-| onTouchEnd | `(e: MenuItemTouchEvent) => void` | ✘ | Call this function after pressing the menu item |
-| onPress | `(e: MenuItemPressEvent) => void` | ✘ | Call this function after pressing the menu item -- react native |
+| onClick | `(e: MouseEvent) => void` | ✘ | Call this function back when you click the menu item |
+| onTouchEnd | `(e: TouchEvent) => void` | ✘ | Call this function after pressing the menu item |
+| onPress | `(e: GestureResponderEvent) => void` | ✘ | Call this function after pressing the menu item -- react native |
 | renderIcon | ` (props: MenuItemIconProps) => ReactNode` | ✘ | Render the menu item icon |
 | renderExpandIcon | ` (props: MenuItemExpandIconProps) => ReactNode` | ✘ | Render the menu item expansion icon |
 | renderMain | ` (props: MenuItemMainProps) => ReactNode` | ✘ | Render the menu item main |
