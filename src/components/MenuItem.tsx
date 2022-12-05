@@ -145,17 +145,22 @@ const MenuItem = <T extends HTMLElement>(props: MenuItemProps<T>) => {
     id,
   };
 
+  const handleResponse = <E,>(e: E, callback?: (e: E) => void) => {
+    const response = !loading && !disabled;
+
+    response && callback?.(e);
+  };
+
   const handleCallback = (key: string) => {
-    const response = !disabled && !loading;
     const event = {
-      onClick: handleDefaultEvent(
-        (e: React.MouseEvent<T, MouseEvent>) => response && onClick?.(e),
+      onClick: handleDefaultEvent((e: React.MouseEvent<T, MouseEvent>) =>
+        handleResponse(e, onClick),
       ),
-      onTouchEnd: handleDefaultEvent(
-        (e: TouchEvent<T>) => response && onTouchEnd?.(e),
+      onTouchEnd: handleDefaultEvent((e: TouchEvent<T>) =>
+        handleResponse(e, onTouchEnd),
       ),
-      onPress: handleDefaultEvent(
-        (e: GestureResponderEvent) => response && onPress?.(e),
+      onPress: handleDefaultEvent((e: GestureResponderEvent) =>
+        handleResponse(e, onPress),
       ),
     };
 
@@ -175,13 +180,12 @@ const MenuItem = <T extends HTMLElement>(props: MenuItemProps<T>) => {
     </>
   );
 
-  const container =
-    renderContainer?.({
-      ...childrenProps,
-      ref,
-      children: content,
-      ...bindEvents(events, handleCallback),
-    }) ?? content;
+  const container = renderContainer?.({
+    ...childrenProps,
+    ref,
+    children: content,
+    ...bindEvents(events, handleCallback),
+  });
 
   return <>{container}</>;
 };

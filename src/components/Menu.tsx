@@ -149,7 +149,7 @@ const Menu = <T extends HTMLElement>({
     [onSelect],
   );
 
-  const handleSelected = <E,>(e: E, key: string) => {
+  const handleResponse = <E,>(e: E, key: string) => {
     const {selectedKeys = []} = menuOptions;
     const handleSingleSelected = () =>
       selectedKeys.includes(key) ? [] : [key];
@@ -166,7 +166,7 @@ const Menu = <T extends HTMLElement>({
     const options = {key, selectedKeys: nextKeys, event: e};
 
     setSelectOptions(options);
-    handleMenuOptionsChange(options);
+    handleMenuOptionsChange?.(options);
   };
 
   useEffect(() => {
@@ -177,11 +177,11 @@ const Menu = <T extends HTMLElement>({
 
     nextSelectedKeys &&
       setSelectOptions(currentOptions => {
-        const change =
+        const update =
           sort(currentOptions.selectedKeys) !== sort(nextSelectedKeys) &&
           status === 'succeeded';
 
-        change && handleMenuOptionsChange({selectedKeys: nextSelectedKeys});
+        update && handleMenuOptionsChange({selectedKeys: nextSelectedKeys});
 
         return {selectedKeys: nextSelectedKeys};
       });
@@ -189,10 +189,13 @@ const Menu = <T extends HTMLElement>({
     status === 'idle' && setStatus('succeeded');
   }, [defaultSelectedKeys, handleMenuOptionsChange, selectedKeys, status]);
 
-  const main = renderMain?.({...childrenProps, onSelect: handleSelected});
+  const main = renderMain?.({...childrenProps, onSelect: handleResponse});
   const content = <>{main}</>;
-  const container =
-    renderContainer?.({...childrenProps, ref, children: content}) ?? content;
+  const container = renderContainer?.({
+    ...childrenProps,
+    ref,
+    children: content,
+  });
 
   return <>{container}</>;
 };
