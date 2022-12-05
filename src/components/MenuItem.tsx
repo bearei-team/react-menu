@@ -145,13 +145,13 @@ const MenuItem = <T extends HTMLElement>(props: MenuItemProps<T>) => {
     id,
   };
 
+  const handleResponse = <E,>(e: E, callback?: (e: E) => void) => {
+    const response = !loading && !disabled;
+
+    response && callback?.(e);
+  };
+
   const handleCallback = (key: string) => {
-    const handleResponse = <E,>(e: E, callback?: (e: E) => void) => {
-      const response = !loading && !disabled;
-
-      response && callback?.(e);
-    };
-
     const event = {
       onClick: handleDefaultEvent((e: React.MouseEvent<T, MouseEvent>) =>
         handleResponse(e, onClick),
