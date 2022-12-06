@@ -42,8 +42,8 @@ Base menu components that support React and React native
 | icon | `ReactNode` | ✘ | Menu item icon |
 | disabled | `boolean` | ✘ | Whether or not to disable the menu item |
 | loading | `boolean` | ✘ | Whether the menu item is loading |
-| onClick | `(e: MouseEvent) => void` | ✘ | This function is called when menu item is clicked |
-| onTouchEnd | `(e: TouchEvent) => void` | ✘ | This function is called when the menu item is pressed |
+| onClick | `(e: React.MouseEvent) => void` | ✘ | This function is called when menu item is clicked |
+| onTouchEnd | `(e: React.TouchEvent) => void` | ✘ | This function is called when the menu item is pressed |
 | onPress | `(e: GestureResponderEvent) => void` | ✘ | This function is called when the menu item is pressed -- react native |
 | renderIcon | ` (props: MenuItemIconProps) => ReactNode` | ✘ | Render the menu item icon |
 | renderExpandIcon | ` (props: MenuItemExpandIconProps) => ReactNode` | ✘ | Render the menu item expansion icon |
