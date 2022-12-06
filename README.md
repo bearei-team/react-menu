@@ -37,7 +37,7 @@ Base menu components that support React and React native
 | mode | `vertical` `horizontal` `inline` | ✘ | Menu mode |
 | expandIcon | `ReactNode` | ✘ | Menu item expansion icon |
 | selectedKeys | `string[]` | ✘ | The menu selects the completed key |
-| label | `ReactNode` | ✘ | Menu item label |
+| label | `string` | ✘ | Menu item label |
 | index | `string` | ✘ | Menu item index |
 | icon | `ReactNode` | ✘ | Menu item icon |
 | disabled | `boolean` | ✘ | Whether or not to disable the menu item |
