@@ -11,6 +11,7 @@ import {
 import type {ViewProps} from 'react-native';
 import MenuItem, {BaseMenuItemProps} from './MenuItem';
 import * as array from '@bearei/react-util/lib/array';
+
 /**
  * Menu options
  */
@@ -164,7 +165,7 @@ const Menu = <T extends HTMLElement>({
     nextSelectedKeys &&
       setSelectOptions(currentOptions => {
         const isUpdate =
-          array.isEqual(currentOptions.selectedKeys ?? [], nextSelectedKeys) &&
+          !array.isEqual(currentOptions.selectedKeys ?? [], nextSelectedKeys) &&
           status === 'succeeded';
 
         isUpdate && handleMenuOptionsChange({selectedKeys: nextSelectedKeys});
