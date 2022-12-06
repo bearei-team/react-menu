@@ -17,7 +17,7 @@ export interface BaseMenuItemProps<T = HTMLElement>
   extends Omit<
     DetailedHTMLProps<HTMLAttributes<T>, T> &
       ViewProps &
-      Pick<BaseMenuProps, 'mode' | 'tooltip' | 'expandIcon' | 'selectedKeys'>,
+      Pick<BaseMenuProps, 'mode' | 'expandIcon' | 'selectedKeys'>,
     'onClick' | 'onTouchEnd' | 'onPress'
   > {
   /**
@@ -28,7 +28,7 @@ export interface BaseMenuItemProps<T = HTMLElement>
   /**
    * Menu item label
    */
-  label?: string;
+  label?: ReactNode;
 
   /**
    * Menu item index
@@ -51,17 +51,17 @@ export interface BaseMenuItemProps<T = HTMLElement>
   loading?: boolean;
 
   /**
-   * Call this function back when you click the menu item
+   * This function is called when menu item is clicked
    */
   onClick?: (e: React.MouseEvent<T, MouseEvent>) => void;
 
   /**
-   * Call this function after pressing the menu item
+   * This function is called when the menu item is pressed
    */
   onTouchEnd?: (e: TouchEvent<T>) => void;
 
   /**
-   * Call this function after pressing the menu item  -- react native
+   * This function is called when the menu item is pressed -- react native
    */
   onPress?: (e: GestureResponderEvent) => void;
 }
@@ -101,7 +101,7 @@ export interface MenuItemChildrenProps extends Omit<BaseMenuItemProps, 'ref'> {
   children?: ReactNode;
 
   /**
-   * Set the menu item status
+   * Status of menu item selection
    */
   status?: Status;
 }
@@ -116,11 +116,11 @@ const MenuItem = <T extends HTMLElement>(props: MenuItemProps<T>) => {
   const {
     ref,
     icon,
-    expandIcon,
-    disabled,
-    loading,
-    selectedKeys,
     index,
+    loading,
+    disabled,
+    expandIcon,
+    selectedKeys,
     onClick,
     onPress,
     onTouchEnd,
@@ -135,20 +135,20 @@ const MenuItem = <T extends HTMLElement>(props: MenuItemProps<T>) => {
   const events = Object.keys(props).filter(key => key.startsWith('on'));
   const childrenProps = {
     ...args,
+    id,
     index,
+    loading,
+    disabled,
     selectedKeys,
     status: (selectedKeys?.includes(index ?? '')
       ? 'selected'
       : 'normal') as Status,
-    loading,
-    disabled,
-    id,
   };
 
   const handleResponse = <E,>(e: E, callback?: (e: E) => void) => {
-    const response = !loading && !disabled;
+    const isResponse = !loading && !disabled;
 
-    response && callback?.(e);
+    isResponse && callback?.(e);
   };
 
   const handleCallback = (key: string) => {

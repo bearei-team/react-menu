@@ -12,22 +12,21 @@ Base menu components that support React and React native
 
 | Name | Type | Required | Description |
 | :-- | --: | --: | :-- |
-| key | `string` | ✘ | Currently select the completed menu item key |
-| selectedKeys | `string[]` | ✘ | All select the completed menu item key |
-| event | `unknown` | ✘ | Triggers an event that completes the selection of the current menu item |
+| key | `string` | ✘ | The key currently selected on the menu |
+| selectedKeys | `string[]` | ✘ | The menu selects the completed key |
+| event | `unknown` | ✘ | Triggers an event when a menu option changes |
 
 #### Menu
 
 | Name | Type | Required | Description |
 | :-- | --: | --: | :-- |
-| items | `BaseMenuItemProps[]` | ✘ | Menu items |
-| multiple | `boolean` | ✘ | Allow multiple menu items |
-| expandIcon | `ReactNode` | ✘ | Icon for menu expansion |
-| mode | `vertical` `horizontal` `inline` | ✘ | Menu mode |
-| selectedKeys | `string[]` | ✘ | All select the completed menu item key |
+| selectedKeys | `string[]` | ✘ | The menu selects the completed key |
 | defaultSelectedKeys | `string[]` | ✘ | The menu selects the completion item by default |
-| tooltip | `ReactNode` | ✘ | Menu tip |
-| onSelect | `(options: MenuOptions) => void` | ✘ | Call this function when menu item selection is complete |
+| items | `(BaseMenuItemProps & {key?: string})[]` | ✘ | Menu items |
+| multiple | `boolean` | ✘ | Allow multiple menu items to be selected |
+| expandIcon | `ReactNode` | ✘ | Menu item expansion icon |
+| mode | `vertical` `horizontal` `inline` | ✘ | Menu mode |
+| onSelect | `(options: MenuOptions) => void` | ✘ | This function is called back when the menu item selection is complete |
 | renderMain | `(props: MenuMainProps) => ReactNode` | ✘ | Render the menu main |
 | renderContainer | `(props: MenuContainerProps) => ReactNode` | ✘ | Render the menu container |
 
@@ -36,17 +35,16 @@ Base menu components that support React and React native
 | Name | Type | Required | Description |
 | :-- | --: | --: | :-- |
 | mode | `vertical` `horizontal` `inline` | ✘ | Menu mode |
-| tooltip | `ReactNode` | ✘ | Menu tip |
-| expandIcon | `ReactNode` | ✘ | Icon for menu expansion |
-| selectedKeys | `string[]` | ✘ | All select the completed menu item key |
-| label | `string` | ✘ | Menu item label |
+| expandIcon | `ReactNode` | ✘ | Menu item expansion icon |
+| selectedKeys | `string[]` | ✘ | The menu selects the completed key |
+| label | `ReactNode` | ✘ | Menu item label |
 | index | `string` | ✘ | Menu item index |
 | icon | `ReactNode` | ✘ | Menu item icon |
 | disabled | `boolean` | ✘ | Whether or not to disable the menu item |
 | loading | `boolean` | ✘ | Whether the menu item is loading |
-| onClick | `(e: MouseEvent) => void` | ✘ | Call this function back when you click the menu item |
-| onTouchEnd | `(e: TouchEvent) => void` | ✘ | Call this function after pressing the menu item |
-| onPress | `(e: GestureResponderEvent) => void` | ✘ | Call this function after pressing the menu item -- react native |
+| onClick | `(e: MouseEvent) => void` | ✘ | This function is called when menu item is clicked |
+| onTouchEnd | `(e: TouchEvent) => void` | ✘ | This function is called when the menu item is pressed |
+| onPress | `(e: GestureResponderEvent) => void` | ✘ | This function is called when the menu item is pressed -- react native |
 | renderIcon | ` (props: MenuItemIconProps) => ReactNode` | ✘ | Render the menu item icon |
 | renderExpandIcon | ` (props: MenuItemExpandIconProps) => ReactNode` | ✘ | Render the menu item expansion icon |
 | renderMain | ` (props: MenuItemMainProps) => ReactNode` | ✘ | Render the menu item main |
@@ -66,21 +64,14 @@ const menus = [
 ];
 
 const renderMenuItem = (
-  {
-    loading,
-    disabled,
-    icon,
-    key,
-    label,
-    ...props
-  }: BaseMenuItemProps<HTMLDivElement>,
+  {loading, disabled, icon, key, label, ...props}: BaseMenuItemProps,
   onSelect?: (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     key: string,
   ) => void,
 ) => (
-  <MenuItem<HTMLDivElement>
-    {...pickHTMLAttributes(props)}
+  <MenuItem
+    {...props}
     key={key}
     loading={loading}
     disabled={disabled}
@@ -89,28 +80,28 @@ const renderMenuItem = (
     label={label}
     onClick={e => key && onSelect?.(e, key)}
     renderIcon={({children, ...props}) => (
-      <i {...pickHTMLAttributes(props)}>{children}</i>
+      <i {...props}>{children}</i>
     )}
     renderExpandIcon={({children, ...props}) => (
-      <i {...pickHTMLAttributes(props)}>{children}</i>
+      <i {..props}>{children}</i>
     )}
     renderMain={({label, ...props}) => (
-      <div {...pickHTMLAttributes(props)}>{label}</div>
+      <div {...props}>{label}</div>
     )}
     renderContainer={({id, children, ...props}) => (
-      <div {...pickHTMLAttributes(props)}>{children}</div>
+      <div {...props}>{children}</div>
     )}
   />
 );
 
 const menu = (
-  <Menu<HTMLDivElement>
+  <Menu
     items={menus}
     renderMain={({items, onSelect}) => (
       <div>{items?.map(item => renderMenuItem(item, onSelect))}</div>
     )}
     renderContainer={({id, children, ...props}) => (
-      <div data-id={id} {...pickHTMLAttributes(props)}>
+      <div data-id={id} {...props}>
         {children}
       </div>
     )}

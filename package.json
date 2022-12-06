@@ -1,6 +1,6 @@
 {
   "name": "@bearei/react-menu",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "module": "./lib-esm/index.js",
@@ -22,7 +22,7 @@
     "url": "https://github.com/bear-ei/react-menu/issues"
   },
   "dependencies": {
-    "@bearei/react-util": "^0.0.20",
+    "@bearei/react-util": "^0.0.22",
     "react": "^18.2.0"
   },
   "devDependencies": {
