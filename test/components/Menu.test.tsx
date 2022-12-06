@@ -28,10 +28,10 @@ const renderMenuItem = (
     label,
     expandIcon,
     ...props
-  }: BaseMenuItemProps<HTMLDivElement> & {key?: string},
+  }: BaseMenuItemProps & {key?: string},
   onSelect?: <E>(e: E, key: string) => void,
 ) => (
-  <MenuItem<HTMLDivElement>
+  <MenuItem
     {...pickHTMLAttributes(props)}
     key={key}
     loading={loading}
@@ -79,7 +79,7 @@ const renderMenuItem = (
 describe('test/components/Menu.test.ts', () => {
   test('It should be a render menu', async () => {
     const {getByDataCy} = render(
-      <Menu<HTMLDivElement>
+      <Menu
         items={menus}
         renderMain={({items, onSelect}) => (
           <div data-cy={'MenuMain'} data-main="Main">
@@ -106,7 +106,7 @@ describe('test/components/Menu.test.ts', () => {
     let selectedKeys!: string[] | undefined;
     const user = userEvent.setup();
     const {getByDataCy} = render(
-      <Menu<HTMLDivElement>
+      <Menu
         items={menus}
         selectedKeys={['1']}
         onSelect={props => (selectedKeys = props.selectedKeys)}
@@ -132,7 +132,7 @@ describe('test/components/Menu.test.ts', () => {
     let selectedKeys!: string[] | undefined;
     const user = userEvent.setup();
     const {getByDataCy} = render(
-      <Menu<HTMLDivElement>
+      <Menu
         items={menus}
         multiple
         defaultSelectedKeys={[]}

@@ -10,23 +10,19 @@ import {
 } from 'react';
 import type {ViewProps} from 'react-native';
 import MenuItem, {BaseMenuItemProps} from './MenuItem';
-
+import * as array from '@bearei/react-util/lib/array';
 /**
  * Menu options
  */
-export interface MenuOptions<E = unknown> {
+export interface MenuOptions<E = unknown>
+  extends Pick<BaseMenuProps, 'selectedKeys'> {
   /**
-   * Currently select the completed menu item key
+   * The key currently selected on the menu
    */
   key?: string;
 
   /**
-   * All select the completed menu item key
-   */
-  selectedKeys?: string[];
-
-  /**
-   * Triggers an event that completes the selection of the current menu item
+   * Triggers an event when a menu option changes
    */
   event?: E;
 }
@@ -36,9 +32,7 @@ export interface MenuOptions<E = unknown> {
  */
 export interface BaseMenuProps<T = HTMLElement>
   extends Omit<
-    DetailedHTMLProps<HTMLAttributes<T>, T> &
-      ViewProps &
-      Pick<MenuOptions, 'selectedKeys'>,
+    DetailedHTMLProps<HTMLAttributes<T>, T> & ViewProps,
     'onSelect'
   > {
   /**
@@ -47,17 +41,27 @@ export interface BaseMenuProps<T = HTMLElement>
   ref?: Ref<T>;
 
   /**
+   * The menu selects the completed key
+   */
+  selectedKeys?: string[];
+
+  /**
+   * Menu item selected by default
+   */
+  defaultSelectedKeys?: string[];
+
+  /**
    * Menu items
    */
   items?: (BaseMenuItemProps<T> & {key?: string})[];
 
   /**
-   * Allow multiple menu items
+   * Allow multiple menu items to be selected
    */
   multiple?: boolean;
 
   /**
-   * Icon for menu expansion
+   * Menu item expansion icon
    */
   expandIcon?: ReactNode;
 
@@ -67,18 +71,7 @@ export interface BaseMenuProps<T = HTMLElement>
   mode?: 'vertical' | 'horizontal' | 'inline';
 
   /**
-   * The menu selects the completion item by default
-   */
-  defaultSelectedKeys?: string[];
-
-  /**
-   * TODO:
-   * Menu tip
-   */
-  tooltip?: ReactNode;
-
-  /**
-   * Call this function when menu item selection is complete
+   * This function is called back when the menu item selection is complete
    */
   onSelect?: <E>(options: MenuOptions<E>) => void;
 }
@@ -151,18 +144,13 @@ const Menu = <T extends HTMLElement>({
 
   const handleResponse = <E,>(e: E, key: string) => {
     const {selectedKeys = []} = menuOptions;
-    const handleSingleSelected = () =>
-      selectedKeys.includes(key) ? [] : [key];
-
-    const handleMultipleSelected = () =>
+    const handleSingle = () => (selectedKeys.includes(key) ? [] : [key]);
+    const handleMultiple = () =>
       selectedKeys.includes(key)
         ? selectedKeys.filter(selectedKey => selectedKey !== key)
         : [...selectedKeys, key];
 
-    const nextKeys = multiple
-      ? handleMultipleSelected()
-      : handleSingleSelected();
-
+    const nextKeys = multiple ? handleMultiple() : handleSingle();
     const options = {key, selectedKeys: nextKeys, event: e};
 
     setSelectOptions(options);
@@ -173,15 +161,13 @@ const Menu = <T extends HTMLElement>({
     const nextSelectedKeys =
       status !== 'idle' ? selectedKeys : defaultSelectedKeys ?? selectedKeys;
 
-    const sort = (array = [] as string[]) => [...array].sort().toString();
-
     nextSelectedKeys &&
       setSelectOptions(currentOptions => {
-        const update =
-          sort(currentOptions.selectedKeys) !== sort(nextSelectedKeys) &&
+        const isUpdate =
+          array.isEqual(currentOptions.selectedKeys ?? [], nextSelectedKeys) &&
           status === 'succeeded';
 
-        update && handleMenuOptionsChange({selectedKeys: nextSelectedKeys});
+        isUpdate && handleMenuOptionsChange({selectedKeys: nextSelectedKeys});
 
         return {selectedKeys: nextSelectedKeys};
       });
