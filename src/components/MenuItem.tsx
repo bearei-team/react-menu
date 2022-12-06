@@ -28,7 +28,7 @@ export interface BaseMenuItemProps<T = HTMLElement>
   /**
    * Menu item label
    */
-  label?: ReactNode;
+  label?: string;
 
   /**
    * Menu item index
