@@ -152,8 +152,6 @@ const MenuItem = <T extends HTMLElement>(props: MenuItemProps<T>) => {
   const handleResponse = <E,>(e: E, callback?: (e: E) => void) => {
     const isResponse = !loading && !disabled;
 
-    isResponse && callback?.(e);
-
     if (isResponse) {
       onSelect?.(e, index);
       callback?.(e);
