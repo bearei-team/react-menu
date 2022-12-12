@@ -84,12 +84,12 @@ export interface MenuProps<T> extends BaseMenuProps<T> {
   /**
    * Render the menu main
    */
-  renderMain?: (props: MenuMainProps<T>) => ReactNode;
+  renderMain: (props: MenuMainProps<T>) => ReactNode;
 
   /**
    * Render the menu container
    */
-  renderContainer?: (props: MenuContainerProps<T>) => ReactNode;
+  renderContainer: (props: MenuContainerProps<T>) => ReactNode;
 }
 
 /**
@@ -105,13 +105,14 @@ export interface MenuChildrenProps<T = HTMLElement>
 }
 
 export interface MenuMainProps<T>
-  extends Omit<MenuChildrenProps<T>, 'onSelect'> {
+  extends Omit<
+    MenuChildrenProps<T> & Pick<BaseMenuProps<T>, 'ref'>,
+    'onSelect'
+  > {
   onSelect: <E>(e: E, key: string) => void;
 }
 
-export type MenuContainerProps<T> = MenuChildrenProps<T> &
-  Pick<BaseMenuProps<T>, 'ref'>;
-
+export type MenuContainerProps<T> = MenuChildrenProps<T>;
 export type MenuType = typeof Menu & {Item: typeof MenuItem};
 
 const Menu = <T extends HTMLElement>({
@@ -176,13 +177,8 @@ const Menu = <T extends HTMLElement>({
     status === 'idle' && setStatus('succeeded');
   }, [defaultSelectedKeys, handleMenuOptionsChange, selectedKeys, status]);
 
-  const main = renderMain?.({...childrenProps, onSelect: handleResponse});
-  const content = <>{main}</>;
-  const container = renderContainer?.({
-    ...childrenProps,
-    ref,
-    children: content,
-  });
+  const main = renderMain({...childrenProps, ref, onSelect: handleResponse});
+  const container = renderContainer({...childrenProps, children: main});
 
   return <>{container}</>;
 };

@@ -83,12 +83,12 @@ export interface MenuItemProps<T> extends BaseMenuItemProps<T> {
   /**
    * Render the menu item main
    */
-  renderMain?: (props: MenuItemMainProps) => ReactNode;
+  renderMain: (props: MenuItemMainProps<T>) => ReactNode;
 
   /**
    * Render the menu item container
    */
-  renderContainer?: (props: MenuItemContainerProps<T>) => ReactNode;
+  renderContainer: (props: MenuItemContainerProps) => ReactNode;
 }
 
 export type Status = 'normal' | 'selected';
@@ -108,9 +108,10 @@ export interface MenuItemChildrenProps extends Omit<BaseMenuItemProps, 'ref'> {
 
 export type MenuItemIconProps = MenuItemChildrenProps;
 export type MenuItemExpandIconProps = MenuItemChildrenProps;
-export type MenuItemMainProps = MenuItemChildrenProps;
-export type MenuItemContainerProps<T> = MenuItemChildrenProps &
+export type MenuItemMainProps<T> = MenuItemChildrenProps &
   Pick<BaseMenuItemProps<T>, 'ref'>;
+
+export type MenuItemContainerProps = MenuItemChildrenProps;
 
 const MenuItem = <T extends HTMLElement>(props: MenuItemProps<T>) => {
   const {
@@ -171,19 +172,18 @@ const MenuItem = <T extends HTMLElement>(props: MenuItemProps<T>) => {
     expandIcon && renderExpandIcon?.({...childrenProps, children: expandIcon});
 
   const iconNode = icon && renderIcon?.({...childrenProps, children: icon});
-  const main = renderMain?.({...childrenProps, disabled, loading});
-  const content = (
-    <>
-      {iconNode}
-      {main}
-      {expandIconNode}
-    </>
-  );
-
-  const container = renderContainer?.({
+  const main = renderMain({
     ...childrenProps,
     ref,
-    children: content,
+    disabled,
+    loading,
+    icon: iconNode,
+    expandIcon: expandIconNode,
+  });
+
+  const container = renderContainer({
+    ...childrenProps,
+    children: main,
     ...bindEvents(events, handleCallback),
   });
 

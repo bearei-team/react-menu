@@ -27,8 +27,8 @@ Base menu components that support React and React native
 | expandIcon | `ReactNode` | ✘ | Menu item expansion icon |
 | mode | `vertical` `horizontal` `inline` | ✘ | Menu mode |
 | onSelect | `(options: MenuOptions) => void` | ✘ | This function is called back when the menu item selection is complete |
-| renderMain | `(props: MenuMainProps) => ReactNode` | ✘ | Render the menu main |
-| renderContainer | `(props: MenuContainerProps) => ReactNode` | ✘ | Render the menu container |
+| renderMain | `(props: MenuMainProps) => ReactNode` | ✔ | Render the menu main |
+| renderContainer | `(props: MenuContainerProps) => ReactNode` | ✔ | Render the menu container |
 
 #### MenuItem
 
@@ -47,8 +47,8 @@ Base menu components that support React and React native
 | onPress | `(e: GestureResponderEvent) => void` | ✘ | This function is called when the menu item is pressed -- react native |
 | renderIcon | ` (props: MenuItemIconProps) => ReactNode` | ✘ | Render the menu item icon |
 | renderExpandIcon | ` (props: MenuItemExpandIconProps) => ReactNode` | ✘ | Render the menu item expansion icon |
-| renderMain | ` (props: MenuItemMainProps) => ReactNode` | ✘ | Render the menu item main |
-| renderContainer | ` (props: MenuItemContainerProps) => ReactNode` | ✘ | Render the menu item container |
+| renderMain | ` (props: MenuItemMainProps) => ReactNode` | ✔ | Render the menu item main |
+| renderContainer | ` (props: MenuItemContainerProps) => ReactNode` | ✔ | Render the menu item container |
 
 ## Use
 
