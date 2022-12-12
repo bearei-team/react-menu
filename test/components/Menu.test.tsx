@@ -59,13 +59,15 @@ const renderMenuItem = (
         {children}
       </i>
     )}
-    renderMain={({label, ...props}) => (
+    renderMain={({label, icon, expandIcon, ...props}) => (
       <div
         {...pickHTMLAttributes(props)}
         data-cy={`ItemMain-${key}`}
         data-key={key}
       >
+        <i>{icon}</i>
         {label}
+        <i>{expandIcon}</i>
       </div>
     )}
     renderContainer={({id, children, ...props}) => (
