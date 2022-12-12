@@ -19,18 +19,15 @@ const menus = [
   },
 ];
 
-const renderMenuItem = (
-  {
-    loading,
-    disabled,
-    icon,
-    key,
-    label,
-    expandIcon,
-    ...props
-  }: BaseMenuItemProps & {key?: string},
-  onSelect?: <E>(e: E, key: string) => void,
-) => (
+const renderMenuItem = ({
+  loading,
+  disabled,
+  icon,
+  key,
+  label,
+  expandIcon,
+  ...props
+}: BaseMenuItemProps & {key?: string}) => (
   <MenuItem
     {...pickHTMLAttributes(props)}
     key={key}
@@ -40,7 +37,7 @@ const renderMenuItem = (
     expandIcon={expandIcon}
     index={key}
     label={label}
-    onClick={e => key && onSelect?.(e, key)}
+    onClick={() => undefined}
     renderIcon={({children, ...props}) => (
       <i
         {...pickHTMLAttributes(props)}
@@ -85,7 +82,7 @@ describe('test/components/Menu.test.ts', () => {
         items={menus}
         renderMain={({items, onSelect}) => (
           <div data-cy={'MenuMain'} data-main="Main">
-            {items?.map(item => renderMenuItem(item, onSelect))}
+            {items?.map(item => renderMenuItem({...item, onSelect}))}
           </div>
         )}
         renderContainer={({id, children, ...props}) => (
@@ -114,7 +111,7 @@ describe('test/components/Menu.test.ts', () => {
         onSelect={props => (selectedKeys = props.selectedKeys)}
         renderMain={({items, onSelect}) => (
           <div data-cy={'MenuMain'} data-main="Main">
-            {items?.map(item => renderMenuItem(item, onSelect))}
+            {items?.map(item => renderMenuItem({...item, onSelect}))}
           </div>
         )}
         renderContainer={({id, children, ...props}) => (
@@ -125,8 +122,8 @@ describe('test/components/Menu.test.ts', () => {
       />,
     );
 
-    await user.click(getByDataCy('Item-1'));
-    await user.click(getByDataCy('Item-2'));
+    await user.click(getByDataCy('ItemMain-1'));
+    await user.click(getByDataCy('ItemMain-2'));
     expect(selectedKeys?.toString()).toEqual(['2'].toString());
   });
 
@@ -141,7 +138,7 @@ describe('test/components/Menu.test.ts', () => {
         onSelect={props => (selectedKeys = props.selectedKeys)}
         renderMain={({items, onSelect}) => (
           <div data-cy={'MenuMain'} data-main="Main">
-            {items?.map(item => renderMenuItem(item, onSelect))}
+            {items?.map(item => renderMenuItem({...item, onSelect}))}
           </div>
         )}
         renderContainer={({id, children, ...props}) => (
@@ -152,11 +149,11 @@ describe('test/components/Menu.test.ts', () => {
       />,
     );
 
-    await user.click(getByDataCy('Item-1'));
-    await user.click(getByDataCy('Item-2'));
+    await user.click(getByDataCy('ItemMain-1'));
+    await user.click(getByDataCy('ItemMain-2'));
     expect(selectedKeys?.toString()).toEqual(['1', '2'].toString());
 
-    await user.click(getByDataCy('Item-2'));
+    await user.click(getByDataCy('ItemMain-2'));
     expect(selectedKeys?.toString()).toEqual(['1'].toString());
   });
 });

@@ -109,7 +109,7 @@ export interface MenuMainProps<T>
     MenuChildrenProps<T> & Pick<BaseMenuProps<T>, 'ref'>,
     'onSelect'
   > {
-  onSelect: <E>(e: E, key: string) => void;
+  onSelect: <E>(e: E, key?: string) => void;
 }
 
 export type MenuContainerProps<T> = MenuChildrenProps<T>;
@@ -144,13 +144,22 @@ const Menu = <T extends HTMLElement>({
     [onSelect],
   );
 
-  const handleResponse = <E,>(e: E, key: string) => {
+  const handleResponse = <E,>(e: E, key?: string) => {
     const {selectedKeys = []} = menuOptions;
-    const handleSingle = () => (selectedKeys.includes(key) ? [] : [key]);
-    const handleMultiple = () =>
-      selectedKeys.includes(key)
-        ? selectedKeys.filter(selectedKey => selectedKey !== key)
-        : [...selectedKeys, key];
+    const handleSingle = () => {
+      const nextKeys = key && selectedKeys.includes(key) ? [] : key && [key];
+
+      return Array.isArray(nextKeys) ? nextKeys : [];
+    };
+
+    const handleMultiple = () => {
+      const nextKeys =
+        key && selectedKeys.includes(key)
+          ? selectedKeys.filter(selectedKey => selectedKey !== key)
+          : key && [...selectedKeys, key];
+
+      return Array.isArray(nextKeys) ? nextKeys : [...selectedKeys];
+    };
 
     const nextKeys = multiple ? handleMultiple() : handleSingle();
     const options = {key, selectedKeys: nextKeys, event: e};
