@@ -8,17 +8,19 @@ import {
   useId,
 } from 'react';
 import type {GestureResponderEvent, ViewProps} from 'react-native';
-import type {BaseMenuProps} from './Menu';
+import type {BaseMenuProps, MenuMainProps} from './Menu';
 
 /**
  * Base menu item props
  */
 export interface BaseMenuItemProps<T = HTMLElement>
-  extends Omit<
-    DetailedHTMLProps<HTMLAttributes<T>, T> &
-      ViewProps &
-      Pick<BaseMenuProps, 'mode' | 'expandIcon' | 'selectedKeys'>,
-    'onClick' | 'onTouchEnd' | 'onPress'
+  extends Partial<
+    Omit<
+      DetailedHTMLProps<HTMLAttributes<T>, T> & ViewProps,
+      'onClick' | 'onTouchEnd' | 'onPress' | 'onSelect'
+    > &
+      Pick<BaseMenuProps, 'mode' | 'expandIcon' | 'selectedKeys'> &
+      Pick<MenuMainProps<T>, 'onSelect'>
   > {
   /**
    * Custom ref
@@ -129,6 +131,7 @@ const MenuItem = <T extends HTMLElement>(props: MenuItemProps<T>) => {
     renderMain,
     renderExpandIcon,
     renderContainer,
+    onSelect,
     ...args
   } = props;
 
@@ -150,6 +153,11 @@ const MenuItem = <T extends HTMLElement>(props: MenuItemProps<T>) => {
     const isResponse = !loading && !disabled;
 
     isResponse && callback?.(e);
+
+    if (isResponse) {
+      onSelect?.(e, index);
+      callback?.(e);
+    }
   };
 
   const handleCallback = (key: string) => {
@@ -179,12 +187,12 @@ const MenuItem = <T extends HTMLElement>(props: MenuItemProps<T>) => {
     loading,
     icon: iconNode,
     expandIcon: expandIconNode,
+    ...bindEvents(events, handleCallback),
   });
 
   const container = renderContainer({
     ...childrenProps,
     children: main,
-    ...bindEvents(events, handleCallback),
   });
 
   return <>{container}</>;
