@@ -1,15 +1,15 @@
-import {pickHTMLAttributes} from '@bearei/react-util';
+import { pickHTMLAttributes } from '@bearei/react-util';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import Menu from '../../src/components/Menu';
-import type {BaseMenuItemProps} from '../../src/components/MenuItem';
-import MenuItem from '../../src/components/MenuItem';
-import {render} from '../utils/testUtils';
+import type { BaseMenuItemProps } from '../../src/components/Menu_item';
+import MenuItem from '../../src/components/Menu_item';
+import { render } from '../utils/test_utils';
 
 const menus = [
-  {label: 'MenuItem1', key: '1', icon: <i />, expandIcon: <i />},
-  {label: 'MenuItem2', key: '2', icon: <i />, expandIcon: <i />},
+  { label: 'MenuItem1', key: '1', icon: <i />, expandIcon: <i /> },
+  { label: 'MenuItem2', key: '2', icon: <i />, expandIcon: <i /> },
   {
     label: 'MenuItem3',
     key: '3',
@@ -27,7 +27,7 @@ const renderMenuItem = ({
   label,
   expandIcon,
   ...props
-}: BaseMenuItemProps & {key?: string}) => (
+}: BaseMenuItemProps<HTMLElement> & { key?: string }) => (
   <MenuItem
     {...pickHTMLAttributes(props)}
     key={key}
@@ -38,7 +38,7 @@ const renderMenuItem = ({
     index={key}
     label={label}
     onClick={() => undefined}
-    renderIcon={({children, ...props}) => (
+    renderIcon={({ children, ...props }) => (
       <i
         {...pickHTMLAttributes(props)}
         data-cy={`ItemIcon-${key}`}
@@ -47,7 +47,7 @@ const renderMenuItem = ({
         {children}
       </i>
     )}
-    renderExpandIcon={({children, ...props}) => (
+    renderExpandIcon={({ children, ...props }) => (
       <i
         data-cy={`ItemExpandIcon-${key}`}
         data-key={key}
@@ -56,7 +56,7 @@ const renderMenuItem = ({
         {children}
       </i>
     )}
-    renderMain={({label, icon, expandIcon, ...props}) => (
+    renderMain={({ label, icon, expandIcon, ...props }) => (
       <div
         {...pickHTMLAttributes(props)}
         data-cy={`ItemMain-${key}`}
@@ -67,7 +67,7 @@ const renderMenuItem = ({
         <i>{expandIcon}</i>
       </div>
     )}
-    renderContainer={({id, children, ...props}) => (
+    renderContainer={({ id, children, ...props }) => (
       <div data-id={id} data-cy={`Item-${key}`} {...pickHTMLAttributes(props)}>
         {children}
       </div>
@@ -77,15 +77,15 @@ const renderMenuItem = ({
 
 describe('test/components/Menu.test.ts', () => {
   test('It should be a render menu', async () => {
-    const {getByDataCy} = render(
+    const { getByDataCy } = render(
       <Menu
         items={menus}
-        renderMain={({items, onSelect}) => (
+        renderMain={({ items, onSelect }) => (
           <div data-cy={'MenuMain'} data-main="Main">
-            {items?.map(item => renderMenuItem({...item, onSelect}))}
+            {items?.map(item => renderMenuItem({ ...item, onSelect }))}
           </div>
         )}
-        renderContainer={({id, children, ...props}) => (
+        renderContainer={({ id, children, ...props }) => (
           <div data-id={id} data-cy={'Menu'} {...pickHTMLAttributes(props)}>
             {children}
           </div>
@@ -104,17 +104,17 @@ describe('test/components/Menu.test.ts', () => {
   test('It should be a single selection of menu options', async () => {
     let selectedKeys!: string[] | undefined;
     const user = userEvent.setup();
-    const {getByDataCy} = render(
+    const { getByDataCy } = render(
       <Menu
         items={menus}
         selectedKeys={['1']}
         onSelect={props => (selectedKeys = props.selectedKeys)}
-        renderMain={({items, onSelect}) => (
+        renderMain={({ items, onSelect }) => (
           <div data-cy={'MenuMain'} data-main="Main">
-            {items?.map(item => renderMenuItem({...item, onSelect}))}
+            {items?.map(item => renderMenuItem({ ...item, onSelect }))}
           </div>
         )}
-        renderContainer={({id, children, ...props}) => (
+        renderContainer={({ id, children, ...props }) => (
           <div data-id={id} data-cy={'Menu'} {...pickHTMLAttributes(props)}>
             {children}
           </div>
@@ -130,18 +130,18 @@ describe('test/components/Menu.test.ts', () => {
   test('It should be menu options with multiple choices', async () => {
     let selectedKeys!: string[] | undefined;
     const user = userEvent.setup();
-    const {getByDataCy} = render(
+    const { getByDataCy } = render(
       <Menu
         items={menus}
         multiple
         defaultSelectedKeys={[]}
         onSelect={props => (selectedKeys = props.selectedKeys)}
-        renderMain={({items, onSelect}) => (
+        renderMain={({ items, onSelect }) => (
           <div data-cy={'MenuMain'} data-main="Main">
-            {items?.map(item => renderMenuItem({...item, onSelect}))}
+            {items?.map(item => renderMenuItem({ ...item, onSelect }))}
           </div>
         )}
-        renderContainer={({id, children, ...props}) => (
+        renderContainer={({ id, children, ...props }) => (
           <div data-id={id} data-cy={'Menu'} {...pickHTMLAttributes(props)}>
             {children}
           </div>

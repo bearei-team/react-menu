@@ -1,8 +1,8 @@
 import {
-  queryHelpers,
   buildQueries,
   Matcher,
   MatcherOptions,
+  queryHelpers,
 } from '@testing-library/react';
 
 // The queryAllByAttribute is a shortcut for attribute-based matchers

@@ -1,4 +1,7 @@
-import {bindEvents, handleDefaultEvent} from '@bearei/react-util/lib/event';
+import {
+  bindEvents,
+  handleDefaultEvent,
+} from '@bearei/react-util/lib/commonjs/event';
 import {
   DetailedHTMLProps,
   HTMLAttributes,
@@ -7,19 +10,19 @@ import {
   TouchEvent,
   useId,
 } from 'react';
-import type {GestureResponderEvent, ViewProps} from 'react-native';
-import type {BaseMenuProps, MenuMainProps} from './Menu';
+import type { GestureResponderEvent, ViewProps } from 'react-native';
+import type { BaseMenuProps, MenuMainProps } from './Menu';
 
 /**
  * Base menu item props
  */
-export interface BaseMenuItemProps<T = HTMLElement>
+export interface BaseMenuItemProps<T>
   extends Partial<
     Omit<
       DetailedHTMLProps<HTMLAttributes<T>, T> & ViewProps,
       'onClick' | 'onTouchEnd' | 'onPress' | 'onSelect'
     > &
-      Pick<BaseMenuProps, 'mode' | 'expandIcon' | 'selectedKeys'> &
+      Pick<BaseMenuProps<T>, 'mode' | 'expandIcon' | 'selectedKeys'> &
       Pick<MenuMainProps<T>, 'onSelect'>
   > {
   /**
@@ -75,12 +78,12 @@ export interface MenuItemProps<T> extends BaseMenuItemProps<T> {
   /**
    * Render the menu item icon
    */
-  renderIcon?: (props: MenuItemIconProps) => ReactNode;
+  renderIcon?: (props: MenuItemIconProps<T>) => ReactNode;
 
   /**
    * Render the menu item expansion icon
    */
-  renderExpandIcon?: (props: MenuItemExpandIconProps) => ReactNode;
+  renderExpandIcon?: (props: MenuItemExpandIconProps<T>) => ReactNode;
 
   /**
    * Render the menu item main
@@ -90,12 +93,13 @@ export interface MenuItemProps<T> extends BaseMenuItemProps<T> {
   /**
    * Render the menu item container
    */
-  renderContainer: (props: MenuItemContainerProps) => ReactNode;
+  renderContainer: (props: MenuItemContainerProps<T>) => ReactNode;
 }
 
 export type Status = 'normal' | 'selected';
 
-export interface MenuItemChildrenProps extends Omit<BaseMenuItemProps, 'ref'> {
+export interface MenuItemChildrenProps<T>
+  extends Omit<BaseMenuItemProps<T>, 'ref'> {
   /**
    * Component unique ID
    */
@@ -108,14 +112,16 @@ export interface MenuItemChildrenProps extends Omit<BaseMenuItemProps, 'ref'> {
   status?: Status;
 }
 
-export type MenuItemIconProps = MenuItemChildrenProps;
-export type MenuItemExpandIconProps = MenuItemChildrenProps;
-export type MenuItemMainProps<T> = MenuItemChildrenProps &
+export type MenuItemIconProps<T> = MenuItemChildrenProps<T>;
+export type MenuItemExpandIconProps<T> = MenuItemChildrenProps<T>;
+export type MenuItemMainProps<T> = MenuItemChildrenProps<T> &
   Pick<BaseMenuItemProps<T>, 'ref'>;
 
-export type MenuItemContainerProps = MenuItemChildrenProps;
+export type MenuItemContainerProps<T> = MenuItemChildrenProps<T>;
 
-const MenuItem = <T extends HTMLElement>(props: MenuItemProps<T>) => {
+const MenuItem = <T extends HTMLElement = HTMLElement>(
+  props: MenuItemProps<T>,
+) => {
   const {
     ref,
     icon,
@@ -175,9 +181,10 @@ const MenuItem = <T extends HTMLElement>(props: MenuItemProps<T>) => {
   };
 
   const expandIconNode =
-    expandIcon && renderExpandIcon?.({...childrenProps, children: expandIcon});
+    expandIcon &&
+    renderExpandIcon?.({ ...childrenProps, children: expandIcon });
 
-  const iconNode = icon && renderIcon?.({...childrenProps, children: icon});
+  const iconNode = icon && renderIcon?.({ ...childrenProps, children: icon });
   const main = renderMain({
     ...childrenProps,
     ref,
