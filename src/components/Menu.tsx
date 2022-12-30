@@ -1,3 +1,4 @@
+import * as array from '@bearei/react-util/lib/commonjs/array';
 import {
   DetailedHTMLProps,
   HTMLAttributes,
@@ -8,15 +9,14 @@ import {
   useId,
   useState,
 } from 'react';
-import type {ViewProps} from 'react-native';
-import MenuItem, {BaseMenuItemProps} from './MenuItem';
-import * as array from '@bearei/react-util/lib/array';
+import type { ViewProps } from 'react-native';
+import MenuItem, { BaseMenuItemProps } from './Menu_item';
 
 /**
  * Menu options
  */
-export interface MenuOptions<E = unknown>
-  extends Pick<BaseMenuProps, 'selectedKeys'> {
+export interface MenuOptions<T, E = unknown>
+  extends Pick<BaseMenuProps<T>, 'selectedKeys'> {
   /**
    * The key currently selected on the menu
    */
@@ -31,7 +31,7 @@ export interface MenuOptions<E = unknown>
 /**
  * Base menu props
  */
-export interface BaseMenuProps<T = HTMLElement>
+export interface BaseMenuProps<T>
   extends Omit<
     DetailedHTMLProps<HTMLAttributes<T>, T> & ViewProps,
     'onSelect'
@@ -54,7 +54,7 @@ export interface BaseMenuProps<T = HTMLElement>
   /**
    * Menu items
    */
-  items?: (BaseMenuItemProps<T> & {key?: string})[];
+  items?: (BaseMenuItemProps<T> & { key?: string })[];
 
   /**
    * Allow multiple menu items to be selected
@@ -74,7 +74,7 @@ export interface BaseMenuProps<T = HTMLElement>
   /**
    * This function is called back when the menu item selection is complete
    */
-  onSelect?: <E>(options: MenuOptions<E>) => void;
+  onSelect?: <E>(options: MenuOptions<T, E>) => void;
 }
 
 /**
@@ -95,8 +95,7 @@ export interface MenuProps<T> extends BaseMenuProps<T> {
 /**
  * Menu children props
  */
-export interface MenuChildrenProps<T = HTMLElement>
-  extends Omit<BaseMenuProps<T>, 'ref'> {
+export interface MenuChildrenProps<T> extends Omit<BaseMenuProps<T>, 'ref'> {
   /**
    * Component unique ID
    */
@@ -113,9 +112,9 @@ export interface MenuMainProps<T>
 }
 
 export type MenuContainerProps<T> = MenuChildrenProps<T>;
-export type MenuType = typeof Menu & {Item: typeof MenuItem};
+export type MenuType = typeof Menu & { Item: typeof MenuItem };
 
-const Menu = <T extends HTMLElement>({
+const Menu = <T extends HTMLElement = HTMLElement>({
   ref,
   items,
   multiple,
@@ -128,7 +127,7 @@ const Menu = <T extends HTMLElement>({
 }: MenuProps<T>) => {
   const id = useId();
   const [status, setStatus] = useState('idle');
-  const [menuOptions, setSelectOptions] = useState<MenuOptions>({
+  const [menuOptions, setSelectOptions] = useState<MenuOptions<T>>({
     selectedKeys: [],
   });
 
@@ -145,7 +144,7 @@ const Menu = <T extends HTMLElement>({
   );
 
   const handleResponse = <E,>(e: E, key?: string) => {
-    const {selectedKeys = []} = menuOptions;
+    const { selectedKeys = [] } = menuOptions;
     const handleSingle = () => {
       const nextKeys = key && selectedKeys.includes(key) ? [] : key && [key];
 
@@ -162,7 +161,7 @@ const Menu = <T extends HTMLElement>({
     };
 
     const nextKeys = multiple ? handleMultiple() : handleSingle();
-    const options = {key, selectedKeys: nextKeys, event: e};
+    const options = { key, selectedKeys: nextKeys, event: e };
 
     setSelectOptions(options);
     handleMenuOptionsChange?.(options);
@@ -178,20 +177,20 @@ const Menu = <T extends HTMLElement>({
           !array.isEqual(currentOptions.selectedKeys ?? [], nextSelectedKeys) &&
           status === 'succeeded';
 
-        isUpdate && handleMenuOptionsChange({selectedKeys: nextSelectedKeys});
+        isUpdate && handleMenuOptionsChange({ selectedKeys: nextSelectedKeys });
 
-        return {selectedKeys: nextSelectedKeys};
+        return { selectedKeys: nextSelectedKeys };
       });
 
     status === 'idle' && setStatus('succeeded');
   }, [defaultSelectedKeys, handleMenuOptionsChange, selectedKeys, status]);
 
-  const main = renderMain({...childrenProps, ref, onSelect: handleResponse});
-  const container = renderContainer({...childrenProps, children: main});
+  const main = renderMain({ ...childrenProps, ref, onSelect: handleResponse });
+  const container = renderContainer({ ...childrenProps, children: main });
 
   return <>{container}</>;
 };
 
-Object.defineProperty(Menu, 'Item', {value: MenuItem});
+Object.defineProperty(Menu, 'Item', { value: MenuItem });
 
 export default Menu as MenuType;
