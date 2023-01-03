@@ -139,7 +139,7 @@ const Menu = <T extends HTMLElement = HTMLElement>({
   };
 
   const handleMenuOptionsChange = useCallback(
-    <E,>(options: MenuOptions<E>) => onSelect?.(options),
+    <E,>(options: MenuOptions<T, E>) => onSelect?.(options),
     [onSelect],
   );
 

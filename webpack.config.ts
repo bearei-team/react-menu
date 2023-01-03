@@ -2,23 +2,25 @@ import * as glob from 'glob';
 import * as path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import type * as webpack from 'webpack';
-import {config as webpackCJSConfig} from './webpack.config.cjs';
-import {config as webpackESMConfig} from './webpack.config.esm';
+import { config as webpackCJSConfig } from './webpack.config.cjs';
+import { config as webpackESMConfig } from './webpack.config.esm';
 // in case you run into any typescript error when configuring `devServer`
 import 'webpack-dev-server';
 
 const getEntries = () => {
-  const map = {};
+  const entity = {};
   const entryFiles = glob.sync('./src/**/*.{ts,tsx}');
 
   entryFiles.forEach(filepath => {
     let fileDir = /.\/src\/(.*?)\.(ts|tsx)$/i.exec(filepath);
 
     fileDir &&
-      Object.assign(map, {[fileDir[1]]: path.resolve(__dirname, filepath)});
+      Object.assign(entity, {
+        [fileDir[1]]: path.resolve(__dirname, filepath),
+      });
   });
 
-  return map;
+  return entity;
 };
 
 const webpackConfig =
@@ -31,7 +33,7 @@ const config: webpack.Configuration = {
   devtool: mode === 'development' ? 'source-map' : false,
   optimization: {
     minimize: true,
-    minimizer: [new TerserPlugin({include: /\.min\.js$/})],
+    minimizer: [new TerserPlugin({ include: /\.min\.js$/ })],
   },
   module: {
     rules: [
