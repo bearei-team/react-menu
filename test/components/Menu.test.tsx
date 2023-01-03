@@ -3,9 +3,9 @@ import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import Menu from '../../src/components/Menu';
-import type { BaseMenuItemProps } from '../../src/components/Menu_item';
-import MenuItem from '../../src/components/Menu_item';
-import { render } from '../utils/test_utils';
+import type { BaseMenuItemProps } from '../../src/components/Menu-item';
+import MenuItem from '../../src/components/Menu-item';
+import { render } from '../utils/test-utils';
 
 const menus = [
   { label: 'MenuItem1', key: '1', icon: <i />, expandIcon: <i /> },
