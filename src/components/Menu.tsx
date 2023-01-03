@@ -10,7 +10,7 @@ import {
   useState,
 } from 'react';
 import type { ViewProps } from 'react-native';
-import MenuItem, { BaseMenuItemProps } from './Menu_item';
+import MenuItem, { BaseMenuItemProps } from './Menu-item';
 
 /**
  * Menu options
