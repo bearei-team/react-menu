@@ -6,7 +6,7 @@ export const config: webpack.Configuration = {
     path: path.resolve(__dirname, './lib/module'),
     filename: '[name].js',
     publicPath: './lib/module',
-    library: {type: 'module'},
+    library: { type: 'module' },
     environment: {
       module: true,
     },

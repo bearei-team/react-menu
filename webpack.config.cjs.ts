@@ -6,7 +6,7 @@ export const config: webpack.Configuration = {
     path: path.resolve(__dirname, './lib/commonjs'),
     filename: '[name].js',
     publicPath: './lib/commonjs',
-    library: {type: 'commonjs'},
+    library: { type: 'commonjs' },
   },
   externalsType: 'commonjs',
   externals: {
