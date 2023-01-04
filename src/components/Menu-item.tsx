@@ -59,7 +59,7 @@ export interface BaseMenuItemProps<T>
   /**
    * This function is called when menu item is clicked
    */
-  onClick?: (e: MouseEvent<T, MouseEvent>) => void;
+  onClick?: (e: MouseEvent<T>) => void;
 
   /**
    * This function is called when the menu item is pressed
@@ -172,7 +172,7 @@ const MenuItem = <T extends HTMLElement = HTMLElement>(
 
   const handleCallback = (event: EventType) => {
     const eventFunctions = {
-      onClick: handleDefaultEvent((e: MouseEvent<T, MouseEvent>) =>
+      onClick: handleDefaultEvent((e: MouseEvent<T>) =>
         handleResponse(e, onClick),
       ),
       onTouchEnd: handleDefaultEvent((e: TouchEvent<T>) =>
@@ -199,7 +199,7 @@ const MenuItem = <T extends HTMLElement = HTMLElement>(
     icon: iconNode,
     expandIcon: expandIconNode,
     ...(bindEvents(eventNames, handleCallback) as {
-      onClick?: (e: MouseEvent<T, MouseEvent>) => void;
+      onClick?: (e: MouseEvent<T>) => void;
       onTouchEnd?: (e: TouchEvent<T>) => void;
       onPress?: (e: GestureResponderEvent) => void;
     }),
