@@ -5,6 +5,7 @@ import {
 import {
   DetailedHTMLProps,
   HTMLAttributes,
+  MouseEvent,
   ReactNode,
   Ref,
   TouchEvent,
@@ -58,7 +59,7 @@ export interface BaseMenuItemProps<T>
   /**
    * This function is called when menu item is clicked
    */
-  onClick?: (e: React.MouseEvent<T, MouseEvent>) => void;
+  onClick?: (e: MouseEvent<T, MouseEvent>) => void;
 
   /**
    * This function is called when the menu item is pressed
@@ -118,6 +119,7 @@ export type MenuItemMainProps<T> = MenuItemChildrenProps<T> &
   Pick<BaseMenuItemProps<T>, 'ref'>;
 
 export type MenuItemContainerProps<T> = MenuItemChildrenProps<T>;
+export type EventType = 'onClick' | 'onPress' | 'onTouchEnd';
 
 const MenuItem = <T extends HTMLElement = HTMLElement>(
   props: MenuItemProps<T>,
@@ -142,7 +144,11 @@ const MenuItem = <T extends HTMLElement = HTMLElement>(
   } = props;
 
   const id = useId();
-  const events = Object.keys(props).filter(key => key.startsWith('on'));
+  const bindEvenNames = ['onClick', 'onPress', 'onTouchEnd'];
+  const eventNames = Object.keys(props).filter(key =>
+    bindEvenNames.includes(key),
+  ) as EventType[];
+
   const childrenProps = {
     ...args,
     id,
@@ -164,9 +170,9 @@ const MenuItem = <T extends HTMLElement = HTMLElement>(
     }
   };
 
-  const handleCallback = (key: string) => {
-    const event = {
-      onClick: handleDefaultEvent((e: React.MouseEvent<T, MouseEvent>) =>
+  const handleCallback = (event: EventType) => {
+    const eventFunctions = {
+      onClick: handleDefaultEvent((e: MouseEvent<T, MouseEvent>) =>
         handleResponse(e, onClick),
       ),
       onTouchEnd: handleDefaultEvent((e: TouchEvent<T>) =>
@@ -177,7 +183,7 @@ const MenuItem = <T extends HTMLElement = HTMLElement>(
       ),
     };
 
-    return event[key as keyof typeof event];
+    return eventFunctions[event];
   };
 
   const expandIconNode =
@@ -192,7 +198,11 @@ const MenuItem = <T extends HTMLElement = HTMLElement>(
     loading,
     icon: iconNode,
     expandIcon: expandIconNode,
-    ...bindEvents(events, handleCallback),
+    ...(bindEvents(eventNames, handleCallback) as {
+      onClick?: (e: MouseEvent<T, MouseEvent>) => void;
+      onTouchEnd?: (e: TouchEvent<T>) => void;
+      onPress?: (e: GestureResponderEvent) => void;
+    }),
   });
 
   const container = renderContainer({
