@@ -39,6 +39,8 @@ Base menu components that support React and React native
 | selectedKeys | `string[]` | ✘ | The menu selects the completed key |
 | label | `string` | ✘ | Menu item label |
 | index | `string` | ✘ | Menu item index |
+| parentIndex | `string` | ✘ | Menu parent index |
+| key | `string` | ✘ | Menu key |
 | icon | `ReactNode` | ✘ | Menu item icon |
 | disabled | `boolean` | ✘ | Whether or not to disable the menu item |
 | loading | `boolean` | ✘ | Whether the menu item is loading |
@@ -49,6 +51,7 @@ Base menu components that support React and React native
 | renderExpandIcon | ` (props: MenuItemExpandIconProps) => ReactNode` | ✘ | Render the menu item expansion icon |
 | renderMain | ` (props: MenuItemMainProps) => ReactNode` | ✔ | Render the menu item main |
 | renderContainer | ` (props: MenuItemContainerProps) => ReactNode` | ✔ | Render the menu item container |
+| children | `BaseMenuItemProps[]` | ✘ | Menu children |
 
 ## Use
 

@@ -21,7 +21,7 @@ export interface BaseMenuItemProps<T>
   extends Partial<
     Omit<
       DetailedHTMLProps<HTMLAttributes<T>, T> & ViewProps,
-      'onClick' | 'onTouchEnd' | 'onPress' | 'onSelect'
+      'onClick' | 'onTouchEnd' | 'onPress' | 'onSelect' | 'children'
     > &
       Pick<BaseMenuProps<T>, 'mode' | 'expandIcon' | 'selectedKeys'> &
       Pick<MenuMainProps<T>, 'onSelect'>
@@ -40,6 +40,16 @@ export interface BaseMenuItemProps<T>
    * Menu item index
    */
   index?: string;
+
+  /**
+   * Menu parent index
+   */
+  parentIndex?: string;
+
+  /**
+   * Menu key
+   */
+  key?: string;
 
   /**
    * Menu item icon
@@ -70,6 +80,11 @@ export interface BaseMenuItemProps<T>
    * This function is called when the menu item is pressed -- react native
    */
   onPress?: (e: GestureResponderEvent) => void;
+
+  /**
+   * Menu children
+   */
+  children?: BaseMenuItemProps<T>[];
 }
 
 /**
@@ -100,7 +115,7 @@ export interface MenuItemProps<T> extends BaseMenuItemProps<T> {
 export type Status = 'normal' | 'selected';
 
 export interface MenuItemChildrenProps<T>
-  extends Omit<BaseMenuItemProps<T>, 'ref'> {
+  extends Omit<BaseMenuItemProps<T>, 'ref' | 'children'> {
   /**
    * Component unique ID
    */
@@ -197,6 +212,7 @@ const MenuItem = <T extends HTMLElement = HTMLElement>(
     disabled,
     loading,
     icon: iconNode,
+    children: <></>,
     expandIcon: expandIconNode,
     ...(bindEvents(eventNames, handleCallback) as {
       onClick?: (e: MouseEvent<T>) => void;
